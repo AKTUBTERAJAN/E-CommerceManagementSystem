@@ -27,8 +27,7 @@ const importData = async () => {
   try {
     await connectDB();
 
-    // deleteMany ko abhi comment kar do, warna purane products delete ho jayenge
-    // await Product.deleteMany();
+   
 
     await Product.insertMany(products);
 
