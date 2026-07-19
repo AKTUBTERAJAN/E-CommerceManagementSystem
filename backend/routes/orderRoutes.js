@@ -1,11 +1,5 @@
 const express = require("express");
-const {
-  createOrder,
-  deleteOrder,
-  getMyOrders,
-  getCancelledOrders,
-  updateOrderStatus,
-} = require("../controllers/orderController");
+const {createOrder,deleteOrder,getMyOrders,getCancelledOrders,updateOrderStatus} = require("../controllers/orderController");
 const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();

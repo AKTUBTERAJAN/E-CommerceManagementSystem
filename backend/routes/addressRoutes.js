@@ -3,12 +3,7 @@ const router = express.Router();
 
 const protect = require("../middleware/authMiddleware");
 
-const {
-  addAddress,
-  getAddresses,
-  updateAddress,
-  deleteAddress,
-} = require("../controllers/addressController");
+const {addAddress,getAddresses,updateAddress,deleteAddress} = require("../controllers/addressController");
 
 router.post("/add", protect, addAddress);
 

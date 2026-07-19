@@ -2,12 +2,8 @@ const express = require("express");
 const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
-const {
-  getCurrentUser,
-  loginUser,
-  registerUser,
-  updateUserProfile,
-} = require("../controllers/userController");
+
+const {getCurrentUser,loginUser,registerUser,updateUserProfile} = require("../controllers/userController");
 const protect = require("../middleware/authMiddleware");
 const router = express.Router();
 

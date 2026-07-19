@@ -1,22 +1,9 @@
 const Address = require("../models/Address");
 
-// ===============================
 // Add New Address
-// ===============================
 const addAddress = async (req, res) => {
   try {
-    const {
-      name,
-      mobile,
-      house,
-      area,
-      landmark,
-      city,
-      state,
-      pincode,
-      country,
-      isDefault,
-    } = req.body;
+    const {name,mobile,house,area,landmark,city,state,pincode,country,isDefault} = req.body;
 
     // Agar new address default hai to purane default ko hata do
     if (isDefault) {
@@ -26,19 +13,8 @@ const addAddress = async (req, res) => {
       );
     }
 
-    const address = await Address.create({
-      user: req.user.id,
-      name,
-      mobile,
-      house,
-      area,
-      landmark,
-      city,
-      state,
-      pincode,
-      country,
-      isDefault,
-    });
+    const address = await Address.create({user: req.user.id,name,mobile,house,area,
+      landmark,city,state,pincode,country,isDefault,});
 
     res.status(201).json({
       success: true,
@@ -53,9 +29,7 @@ const addAddress = async (req, res) => {
   }
 };
 
-// ===============================
 // Get All Addresses
-// ===============================
 const getAddresses = async (req, res) => {
   try {
     const addresses = await Address.find({
@@ -77,9 +51,7 @@ const getAddresses = async (req, res) => {
   }
 };
 
-// ===============================
 // Update Address
-// ===============================
 const updateAddress = async (req, res) => {
   try {
     const {
@@ -103,25 +75,12 @@ const updateAddress = async (req, res) => {
     }
 
     const address = await Address.findOneAndUpdate(
-      {
-        _id: req.params.id,
-        user: req.user.id,
-      },
-      {
-        name,
-        mobile,
-        house,
-        area,
-        landmark,
-        city,
-        state,
-        pincode,
-        country,
-        isDefault,
-      },
-      {
-        new: true,
-      }
+      {_id: req.params.id,user: req.user.id},
+
+      {name,mobile,house,area,landmark,city,state,pincode,country,isDefault},
+
+      {new: true}
+
     );
 
     if (!address) {
@@ -144,9 +103,7 @@ const updateAddress = async (req, res) => {
   }
 };
 
-// ===============================
 // Delete Address
-// ===============================
 const deleteAddress = async (req, res) => {
   try {
     const address = await Address.findOneAndDelete({

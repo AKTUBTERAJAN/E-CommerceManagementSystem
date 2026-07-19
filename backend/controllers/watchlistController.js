@@ -1,9 +1,8 @@
 const Watchlist = require("../models/Watchlist");
 const Product = require("../models/Products");
 
-// ==========================
+
 // Get Watchlist
-// ==========================
 const getWatchlist = async (req, res) => {
   try {
     const watchlist = await Watchlist.find({
@@ -24,9 +23,8 @@ const getWatchlist = async (req, res) => {
   }
 };
 
-// ==========================
+
 // Add Product
-// ==========================
 const addToWatchlist = async (req, res) => {
   try {
     const { productId } = req.body;
@@ -66,9 +64,8 @@ const addToWatchlist = async (req, res) => {
   }
 };
 
-// ==========================
+
 // Remove Product
-// ==========================
 const removeWatchlist = async (req, res) => {
   try {
 
@@ -87,8 +84,4 @@ const removeWatchlist = async (req, res) => {
   }
 };
 
-module.exports = {
-  getWatchlist,
-  addToWatchlist,
-  removeWatchlist,
-};
+module.exports = {getWatchlist,addToWatchlist,removeWatchlist};

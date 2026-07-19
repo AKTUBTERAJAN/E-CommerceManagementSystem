@@ -21,13 +21,6 @@ const updateData = async () => {
         },
       }
     );
-
-    // For You -> Today Deals
-    
-
-    // For You -> Latest Products
-    
-
     console.log("For You fields updated successfully.");
     process.exit();
   } catch (error) {

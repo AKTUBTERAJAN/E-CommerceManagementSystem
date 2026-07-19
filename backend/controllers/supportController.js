@@ -8,12 +8,7 @@ const createSupportMessage = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const supportMessage = await SupportMessage.create({
-      name,
-      email,
-      mobile,
-      message,
-    });
+    const supportMessage = await SupportMessage.create({name,email,mobile,message});
 
     res.status(201).json({
       message: "Message sent successfully",

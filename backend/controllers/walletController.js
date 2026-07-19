@@ -1,8 +1,6 @@
 const Wallet = require("../models/Wallet");
 
-// ===============================
 // Get Wallet
-// ===============================
 const getWallet = async (req, res) => {
   try {
     let wallet = await Wallet.findOne({ user: req.user.id });
@@ -23,9 +21,8 @@ const getWallet = async (req, res) => {
   }
 };
 
-// ===============================
+
 // Add Money
-// ===============================
 const addMoney = async (req, res) => {
   try {
     const { amount } = req.body;
@@ -64,9 +61,8 @@ const addMoney = async (req, res) => {
   }
 };
 
-// ===============================
+
 // Deduct Money
-// ===============================
 const deductMoney = async (req, res) => {
   try {
     const { amount } = req.body;
@@ -105,8 +101,4 @@ const deductMoney = async (req, res) => {
   }
 };
 
-module.exports = {
-  getWallet,
-  addMoney,
-  deductMoney,
-};
+module.exports = {getWallet,addMoney,deductMoney};
