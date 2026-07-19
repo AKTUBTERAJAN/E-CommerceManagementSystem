@@ -4,7 +4,7 @@ const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
 });
 
-// हर request में token automatically भेजने के लिए interceptor
+// all request in token automatically send interceptor
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
   if (token) {

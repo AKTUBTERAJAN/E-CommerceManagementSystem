@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 function Hero() {
   
-
   return (
     <>
       <style>{`
