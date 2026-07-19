@@ -1,6 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { registerUser } from "../../api/auth";
 
 function Signup() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    password: "",
+    address: "",
+    profilePic: null,
+  });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const value = e.target.type === "file" ? e.target.files[0] : e.target.value;
+
+    setFormData({
+      ...formData,
+      [e.target.name]: value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      const userData = new FormData();
+      userData.append("name", formData.name);
+      userData.append("email", formData.email);
+      userData.append("mobile", formData.mobile);
+      userData.append("password", formData.password);
+      userData.append("address", formData.address);
+      if (formData.profilePic) {
+        userData.append("profilePic", formData.profilePic);
+      }
+
+      const { data } = await registerUser(userData);
+      alert(data.message || "Registration successful");
+      navigate("/signin");
+    } catch (error) {
+      alert(error.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
         <style>
@@ -38,7 +85,7 @@ function Signup() {
                     "linear-gradient(60deg,#ffea00e6,#cc0041,#77cc00)",
                 }}
               >
-                <form encType="multipart/form-data">
+                <form onSubmit={handleSubmit}>
                   Name
                   <div className="input-group my-2">
                     <span
@@ -58,6 +105,8 @@ function Signup() {
                       name="name"
                       placeholder="Name.."
                       className="form-control"
+                      value={formData.name}
+                      onChange={handleChange}
                     />
                   </div>
 
@@ -71,7 +120,7 @@ function Signup() {
                         height: "45px",
                       }}
                     >
-                      <i class="fa fa-envelope " aria-hidden="true"></i>
+                      <i className="fa fa-envelope " aria-hidden="true"></i>
                     </span>
 
                     <input
@@ -80,6 +129,8 @@ function Signup() {
                       name="email"
                       placeholder="Email.."
                       className="form-control"
+                      value={formData.email}
+                      onChange={handleChange}
                     />
                   </div>
 
@@ -93,7 +144,7 @@ function Signup() {
                         height: "45px",
                       }}
                     >
-                      <i class="fa fa-phone-square " aria-hidden="true"></i>
+                      <i className="fa fa-phone-square " aria-hidden="true"></i>
                     </span>
 
                     <input
@@ -102,6 +153,8 @@ function Signup() {
                       name="mobile"
                       placeholder="Mobile.."
                       className="form-control"
+                      value={formData.mobile}
+                      onChange={handleChange}
                     />
                   </div>
 
@@ -115,15 +168,17 @@ function Signup() {
                         height: "45px",
                       }}
                     >
-                      <i class="fa fa-key " aria-hidden="true"></i>
+                      <i className="fa fa-key " aria-hidden="true"></i>
                     </span>
 
                     <input
                       type="password"
                       required
-                      name="passwd"
+                      name="password"
                       placeholder="Password.."
                       className="form-control"
+                      value={formData.password}
+                      onChange={handleChange}
                     />
                   </div>
 
@@ -137,14 +192,15 @@ function Signup() {
                         height: "45px",
                       }}
                     >
-                      <i class="fa fa-image" aria-hidden="true"></i>
+                      <i className="fa fa-image" aria-hidden="true"></i>
                     </span>
 
                     <input
                       type="file"
-                      required
-                      name="fu"
+                      accept="image/*"
+                      name="profilePic"
                       className="form-control"
+                      onChange={handleChange}
                     />
                   </div>
 
@@ -158,20 +214,23 @@ function Signup() {
                         height: "45px",
                       }}
                     >
-                       <i class="fa fa-map-marker" aria-hidden="true"></i>
+                       <i className="fa fa-map-marker" aria-hidden="true"></i>
                     </span>
 
                     <textarea
                       className="form-control"
                       name="address"
                       placeholder="Address.."
+                      value={formData.address}
+                      onChange={handleChange}
                     ></textarea>
                   </div>
 
                   <input
                     type="submit"
-                    value="Save"
+                    value={loading ? "Saving..." : "Save"}
                     className="btn bg-mycolor"
+                    disabled={loading}
                   />
                 </form>
               </div>

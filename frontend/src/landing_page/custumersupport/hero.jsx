@@ -1,6 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
+import { sendSupportMessage } from "../../api/support";
 
 function CustomerSupport() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      const { data } = await sendSupportMessage(formData);
+      alert(data.message || "Message sent successfully");
+      setFormData({
+        name: "",
+        email: "",
+        mobile: "",
+        message: "",
+      });
+    } catch (error) {
+      alert(error.response?.data?.message || "Message send failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
        <style>
@@ -13,7 +49,7 @@ function CustomerSupport() {
       </style>
 
       <div className="text-center fs-2">
-        Contact <b style={{ color: "darkorange"}}><u>With Us </u><i class="fa fa-map-marker me-1" aria-hidden="true"></i></b>
+        Contact <b style={{ color: "darkorange"}}><u>With Us </u><i className="fa fa-map-marker me-1" aria-hidden="true"></i></b>
 
         <h6>
           You can contact us by contact number or fill this form any time you
@@ -36,7 +72,7 @@ function CustomerSupport() {
                     "linear-gradient(60deg,#ffea00e6,#cc0041,#77cc00)",
                 }}
               >
-                <form>
+                <form onSubmit={handleSubmit}>
                   <u>Send Your Message</u>
                   <br />
 
@@ -46,6 +82,9 @@ function CustomerSupport() {
                     name="name"
                     placeholder="Name.."
                     className="form-control"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
                   />
 
                   Email
@@ -54,6 +93,9 @@ function CustomerSupport() {
                     name="email"
                     placeholder="Email.."
                     className="form-control"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
                   />
 
                   Mobile
@@ -62,6 +104,9 @@ function CustomerSupport() {
                     name="mobile"
                     placeholder="Mobile.."
                     className="form-control"
+                    required
+                    value={formData.mobile}
+                    onChange={handleChange}
                   />
 
                   Message
@@ -69,12 +114,16 @@ function CustomerSupport() {
                     name="message"
                     className="form-control"
                     style={{ minHeight: "80px", resize: "none" }}
+                    required
+                    value={formData.message}
+                    onChange={handleChange}
                   ></textarea>
 
                   <input
                     type="submit"
-                    value="Send Massage"
+                    value={loading ? "Sending..." : "Send Message"}
                     className="btn bg-success"
+                    disabled={loading}
                   />
                 </form>
               </div>
@@ -102,7 +151,7 @@ function CustomerSupport() {
 
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <b style={{ color: "darkorange", fontSize: "20px" }}>
-                <i class="fa fa-map-marker " aria-hidden="true"></i>
+                <i className="fa fa-map-marker " aria-hidden="true"></i>
                 <u>Mall </u>Address
               </b>
 
@@ -124,7 +173,7 @@ function CustomerSupport() {
 
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <b style={{ color: "darkorange", fontSize: "20px" }}>
-                <i class="fa fa-phone-square" aria-hidden="true"></i>
+                <i className="fa fa-phone-square" aria-hidden="true"></i>
                 <u>Call </u>Us
               </b>
 
@@ -151,7 +200,7 @@ function CustomerSupport() {
 
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <b style={{ color: "darkorange", fontSize: "20px" }}>
-                <i class="fa fa-envelope" aria-hidden="true"></i>
+                <i className="fa fa-envelope" aria-hidden="true"></i>
                 <u>Mail </u>US
               </b>
 

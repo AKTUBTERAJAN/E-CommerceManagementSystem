@@ -24,28 +24,18 @@ function TodayDeals({ deals = [] }) {
   };
 
  
-  const addToCart = () => {
+  const addToCart = (product) => {
   // Check user login
-  const user = localStorage.getItem("user");
+   const user = localStorage.removeItem("user");
+  console.log("User =", user);
 
-  if (!user) {
+  if (!user || user === "null" || user === "undefined") {
     alert("Please Login First");
-    navigate("/signin");   // Apna login route yahan likho
+    navigate("/signin");
     return;
-  }
-
-  if (qty === 0) {
-    alert("Please select quantity");
-    return;
-  }
-
-  alert(`${product.subcategory_name} Added to Cart\nQuantity : ${qty}`);
-
-  // Future MERN Backend
-  // axios.post("http://localhost:5000/api/cart",{
-  //   ...product,
-  //   quantity: qty
-  // })
+  
+};
+ 
 };
 
 
@@ -60,7 +50,7 @@ function TodayDeals({ deals = [] }) {
 
         <div
           className="col-lg-2 col-md-3 col-sm-6"
-          key={item.id}
+          key={item._id || item.id}
         >
 
           <div className="card p-3 mt-2">
@@ -101,7 +91,7 @@ function TodayDeals({ deals = [] }) {
 
                 <button
                   className="input-group-text"
-                  onClick={() => decrease(item.id)}
+                  onClick={() => decrease(item._id || item.id)}
                 >
                   <i class="fa fa-minus" aria-hidden="true"></i>
                 </button>
@@ -109,15 +99,15 @@ function TodayDeals({ deals = [] }) {
                 <input
                   type="text"
                   readOnly
-                  value={qty[item.id] || 0}
+                  value={qty[item._id || item.id] || 0}
                   className="form-control text-center"
                 />
 
                 <button
                   className="input-group-text"
-                  onClick={() => increase(item.id)}
+                  onClick={() => increase(item._id || item.id)}
                 >
-                 <i class="fa fa-plus" aria-hidden="true"></i>
+                 <i className="fa fa-plus" aria-hidden="true"></i>
                 </button>
 
               </div>

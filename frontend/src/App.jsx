@@ -10,6 +10,7 @@ import CustomerSupport from './landing_page/custumersupport/custumersupport';
 import Signup from './landing_page/signup/signup';
 import Signin from './landing_page/signin/signin';
 import Footer from './landing_page/footer';
+import Privacy from './landing_page/privacy/privacy';
 import NotFound from './landing_page/notfound';
 
 function Homepage() {
@@ -23,6 +24,7 @@ function Homepage() {
           <Route path="/customersupport" element={<CustomerSupport/>}/>
           <Route path="/signup" element={<Signup/>}/>
           <Route path="/signin" element={<Signin/>}/>
+          <Route path="/privacy" element={<Privacy/>}/>
           <Route path="*" element={<NotFound/>}/>
         </Routes>
         <Footer/>

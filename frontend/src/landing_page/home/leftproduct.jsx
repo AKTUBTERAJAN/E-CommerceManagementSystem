@@ -15,23 +15,23 @@ function LeftProducts() {
       image: masala,
       qty: "1 Kg",
       oldPrice: "1200",
-      newPrice: "1000",
+      newPrice: "960",
     },
     {
       id: 2,
       name: "Apple",
       image: apple,
       qty: "1 Kg",
-      oldPrice: "70",
-      newPrice: "50",
+      oldPrice: "100",
+      newPrice: "70",
     },
     {
       id: 3,
       name: "Pineapple",
       image: pineapple,
-      qty: "1 Pc",
-      oldPrice: "70",
-      newPrice: "50",
+      qty: "2 Pc",
+      oldPrice: "200",
+      newPrice: "180",
     },
     {
       id: 4,
@@ -39,15 +39,15 @@ function LeftProducts() {
       image: chips,
       qty: "12 Packs",
       oldPrice: "60",
-      newPrice: "50",
+      newPrice: "48",
     },
     {
       id: 5,
       name: "Horlicks",
       image: horlicks,
       qty: "1 Kg",
-      oldPrice: "300",
-      newPrice: "250",
+      oldPrice: "250",
+      newPrice: "200",
     },
   ];
 
@@ -75,7 +75,7 @@ function LeftProducts() {
                   <h5 className="card-title">{item.name}</h5>
 
                   <p className="card-text">
-                    <i className="fa-solid fa-indian-rupee-sign"></i>{" "}
+                     <i className="fa fa-inr" aria-hidden="true"></i>{" "}
                     {item.qty} ||{" "}
                     <s>{item.oldPrice}/-</s>{" "}
                     <b>{item.newPrice}/-</b>
@@ -85,7 +85,7 @@ function LeftProducts() {
 
                     <button className="btn btn-outline-success">
                       Cart{" "}
-                      <i className="fa-solid fa-cart-shopping"></i>
+                     <i className="fa fa-shopping-cart " aria-hidden="true"></i>
                     </button>
                   </p>
 
@@ -104,7 +104,7 @@ function LeftProducts() {
       </div>
     </div>
      {/* Bottom Image */}
-      <a href="/">
+      <a href="/product">
         <img
           src={ganesh}
           alt="Ganesh"

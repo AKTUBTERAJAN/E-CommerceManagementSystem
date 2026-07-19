@@ -22,30 +22,19 @@ function LatestProducts({ pdata = [] }) {
     }
   };
 
-  const addToCart = () => {
-  // Check user login
-  const user = localStorage.getItem("user");
+const addToCart = (product) => {
 
-  if (!user) {
+  const user = localStorage.removeItem("user");
+  console.log("User =", user);
+
+  if (!user || user === "null" || user === "undefined") {
     alert("Please Login First");
-    navigate("/signin");   // Apna login route yahan likho
+    navigate("/signin");
     return;
   }
 
-  if (qty === 0) {
-    alert("Please select quantity");
-    return;
-  }
-
-  alert(`${product.subcategory_name} Added to Cart\nQuantity : ${qty}`);
-
-  // Future MERN Backend
-  // axios.post("http://localhost:5000/api/cart",{
-  //   ...product,
-  //   quantity: qty
-  // })
+  
 };
-
   return (
     <div className="row product fs-4 p-3">
 
@@ -56,7 +45,7 @@ function LatestProducts({ pdata = [] }) {
       {pdata.map((item) => (
         <div
           className="col-lg-2 col-md-3 col-sm-6 mb-3"
-          key={item.id}
+          key={item._id || item.id}
         >
           <div
             className="card p-3 mt-2"
@@ -98,7 +87,7 @@ function LatestProducts({ pdata = [] }) {
 
                 <button
                   className="input-group-text"
-                  onClick={() => decrease(item.id)}
+                  onClick={() => decrease(item._id || item.id)}
                 >
                    <i class="fa fa-minus" aria-hidden="true"></i>
                 </button>
@@ -106,15 +95,15 @@ function LatestProducts({ pdata = [] }) {
                 <input
                   type="text"
                   className="form-control text-center fs-5"
-                  value={qty[item.id] || 0}
+                  value={qty[item._id || item.id] || 0}
                   readOnly
                 />
 
                 <button
                   className="input-group-text"
-                  onClick={() => increase(item.id)}
+                  onClick={() => increase(item._id || item.id)}
                 >
-                 <i class="fa fa-plus" aria-hidden="true"></i>
+                 <i className="fa fa-plus" aria-hidden="true"></i>
                 </button>
 
               </div>
@@ -122,7 +111,7 @@ function LatestProducts({ pdata = [] }) {
               <button
                 className="btn bg-mycolor text-light mt-2"
                 style={{ width: "60px" }}
-                onClick={() => addToCart(item)}
+                onClick={() => {addToCart(item)}}
               >
                 Add
               </button>

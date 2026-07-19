@@ -1,16 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LeftProducts from "./leftproduct";
 import Slider from "./slider";
 import Category from "./category"
 import TodayDeals from "./todaydeals"
 import LatestProducts from "./latestproduct"
-
-import PaanCorner from "../../assets/pan.png";
-import Colddrink from "../../assets/cold drink.png";
-import Oil from "../../assets/oil.webp";
-import Fruits from "../../assets/fruit.jpg";
-import HealthProduct from "../../assets/horlicks.png";
-import AttaRiceDal from "../../assets/ata.png";
+import { getCategories } from "../../api/category";
+import { getProducts } from "../../api/products";
 
 
 function Home() {
@@ -18,143 +13,88 @@ function Home() {
   const categoryData = [
     {
       id: 1,
+      sid:19,
       cname: "Paan Corner",
-      cpic: PaanCorner,
+      product_pic:"media/pan.png"
     },
     {
       id: 2,
+      sid:8,
       cname: "Cold drink",
-      cpic: Colddrink,
+      product_pic:"media/cold drink.png"
     },
     {
       id: 3,
+      sid:20,
       cname: "Oil",
-      cpic: Oil,
+      product_pic:"media/oil.webp"
     },
     {
       id: 4,
+      sid:3,
       cname: "Fruits",
-      cpic: Fruits,
+      product_pic:"media/fruit.jpg"
     },
     {
       id: 5,
+      sid:21,
       cname: "Health Product",
-      cpic: HealthProduct,
+      product_pic:"media/horlicks.png"
     },
     {
       id: 6,
+      sid:22,
       cname: "Atta, Rice & Dal",
-      cpic: AttaRiceDal,
+      product_pic:"media/ata.png"
     },
     
   ];
 
   //Todays Deals
-  const deals = [
-  {
-    id: 1,
-    subcategory_name: "Masala",
-    product_quantity: "1 Kg",
-    price: 1200,
-    discount_price: 960,
-    total_discount: 20,
-    product_pic: "media/masala.png",
-  },
-  {
-    id: 2,
-    subcategory_name: "Apple",
-    product_quantity: "1 Kg",
-    price: 100,
-    discount_price: 70,
-    total_discount: 30,
-    product_pic: "media/Apple2.jpg",
-  },
-  {
-    id: 3,
-    subcategory_name: "Pine Apple",
-    product_quantity: "2 Pc.",
-    price: 200,
-    discount_price: 180,
-    total_discount: 10,
-    product_pic: "media/pineapple.jpg",
-  },
-  {
-    id: 4,
-    subcategory_name: "Cleaner",
-    product_quantity: "1 Pc.",
-    price: 100,
-    discount_price: 70,
-    total_discount: 30,
-    product_pic: "media/3785434.jpg",
-  },
-  {
-    id: 5,
-    subcategory_name: "Baby Care",
-    product_quantity: "200 ML",
-    price: 200,
-    discount_price: 160,
-    total_discount: 20,
-    product_pic: "media/Baby care.png",
-  },
-];
+    const [deals, setDeals] = useState([]);
 
 //Latest Product 
-const latestProducts = [
-  {
-    id: 1,
-    subcategory_name: "Masala",
-    product_quantity: "1 Kg",
-    price: 1200,
-    discount_price: 960,
-    total_discount: 20,
-    product_pic: "media/masala.png",
-  },
-  {
-    id: 2,
-    subcategory_name: "Apple",
-    product_quantity: "1 Kg",
-    price: 100,
-    discount_price: 70,
-    total_discount: 30,
-    product_pic: "media/Apple2.jpg",
-  },
-  {
-    id: 3,
-    subcategory_name: "Nestte Milk",
-    product_quantity: "1 Ltr.",
-    price: 60,
-    discount_price: 54,
-    total_discount: 10,
-    product_pic: "media/Milk.jpg",
-  },
-  {
-    id: 4,
-    subcategory_name: "Pine Apple",
-    product_quantity: "2 Pc.",
-    price: 200,
-    discount_price: 180,
-    total_discount: 10,
-    product_pic: "media/pineapple.jpg",
-  },
-  {
-    id: 5,
-    subcategory_name: "Tomato",
-    product_quantity: "1 kg.",
-    price: 40,
-    discount_price: 32,
-    total_discount: 20,
-    product_pic: "media/tomatoes.jpg",
-  },
-  {
-    id: 6,
-    subcategory_name: "Potato",
-    product_quantity: "1 kg.",
-    price: 25,
-    discount_price: 20,
-    total_discount: 20,
-    product_pic: "media/patato.jpg",
-  },
-];
+const [latestProducts, setLatestProducts] = useState([]);
+
+  const [categories, setCategories] = useState(categoryData);
+  const [todayDeals, setTodayDeals] = useState(deals);
+  const [latestItems, setLatestItems] = useState(latestProducts);
+
+  useEffect(() => {
+    const loadHomeData = async () => {
+      try {
+        const [categoryRes, dealsRes, latestRes] = await Promise.all([
+          getCategories(),
+          getProducts({ deals: true }),
+          getProducts({ latest: true }),
+        ]);
+
+        if (categoryRes.data?.length) {
+          const mergedCategories = categoryData.map((item, index) => {
+            const backendCategory = categoryRes.data[index];
+
+            if (!backendCategory) return item;
+
+            return {
+              ...item,
+              id: backendCategory.sid || backendCategory.id || item.id,
+              cname: backendCategory.name || backendCategory.cname || item.cname,
+              cpic: backendCategory.cpic || item.cpic,
+            };
+          });
+
+          setCategories(mergedCategories);
+        }
+
+        if (dealsRes.data?.length) setTodayDeals(dealsRes.data);
+        if (latestRes.data?.length) setLatestItems(latestRes.data);
+      } catch (error) {
+        console.error("Failed to load home data", error);
+      }
+    };
+
+    loadHomeData();
+  }, []);
 
   return (
     <div className="container-fluid">
@@ -162,9 +102,9 @@ const latestProducts = [
         <LeftProducts />
         <Slider />
       </div>
-       <Category cdata={categoryData}/>
-       <TodayDeals deals={deals} />
-       <LatestProducts pdata={latestProducts} />
+       <Category cdata={categories}/>
+       <TodayDeals deals={todayDeals} />
+       <LatestProducts pdata={latestItems} />
     </div>
   );
 }

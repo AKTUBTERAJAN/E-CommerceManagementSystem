@@ -1,11 +1,13 @@
 import React from "react";
 import { useState } from "react";
+import { loginUser } from "../../api/auth";
 
 function Hero() {
   const [formData, setFormData] = useState({
     email: "",
-    passwd: "",
+    password: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -14,13 +16,37 @@ function Hero() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    console.log(formData);
+  try {
+    setLoading(true);
 
-    // Backend API call yaha hogi
-  };
+    const { data } = await loginUser(
+      formData.email,
+      formData.password
+    );
+
+    // Login Project (5173) me save
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    alert(data.message || "Login Successful");
+
+    // Frontend (5174) par token ke saath redirect
+    window.location.href =
+      `http://localhost:5174/myprofile?token=${encodeURIComponent(data.token)}`;
+
+  } catch (error) {
+    alert(
+      error.response?.data?.message ||
+      error.message ||
+      "Login Failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <>
         <div className="container">
@@ -93,16 +119,16 @@ function Hero() {
                   height: "45px",
                 }}
               >
-                <i class="fa fa-key " aria-hidden="true"></i>
+                <i className="fa fa-key " aria-hidden="true"></i>
               </span>
 
               <input
                 type="password"
-                name="passwd"
+                name="password"
                 placeholder="Password..."
                 className="form-control"
                 required
-                value={formData.passwd}
+                value={formData.password}
                 onChange={handleChange}
               />
 
@@ -113,7 +139,7 @@ function Hero() {
               className="btn bg-mycolor mt-3 w-100"
               style={{ borderRadius: "20px" }}
             >
-              Login
+              {loading ? "Logging in..." : "Login"}
             </button>
 
           </form>
