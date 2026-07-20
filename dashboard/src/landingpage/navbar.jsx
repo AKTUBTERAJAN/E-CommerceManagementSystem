@@ -8,7 +8,10 @@ import { FRONTEND_URL } from "../config";
 
 function Navbar() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+  const saved = localStorage.getItem("user");
+  return saved ? JSON.parse(saved) : null;
+});
    const [sticky, setSticky] = useState(false);
    const { cart } = useCart();
  
