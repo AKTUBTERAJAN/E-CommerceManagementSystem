@@ -106,14 +106,14 @@ function LeftProducts() {
       </div>
     </div>
      {/* Bottom Image */}
-      <a href="/">
+      <Link to="/product">
         <img
           src={ganesh}
           alt="Ganesh"
           className="d-block w-100"
           style={{ height: "250px" }}
         />
-      </a>
+      </Link>
     </div>
   );
 }
