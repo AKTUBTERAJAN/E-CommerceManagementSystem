@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { loginUser } from "../../api/auth";
-import { getCurrentUser } from "../../api/user";
+import { getCurrentUser } from "../../../../dashboard/src/api/user";
 
 const API_URL =import.meta.env.VITE_API_URL || "https://bigmall-backend.onrender.com";
 const DASHBOARD_URL =import.meta.env.VITE_DASHBOARD_URL || "https://bigmall-dashboard.vercel.app";
