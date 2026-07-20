@@ -105,7 +105,7 @@ function LeftProducts() {
       </div>
     </div>
      {/* Bottom Image */}
-      <a href="/product">
+      <a href="https://bigmall-frontend-sage.vercel.app/product">
         <img
           src={ganesh}
           alt="Ganesh"
