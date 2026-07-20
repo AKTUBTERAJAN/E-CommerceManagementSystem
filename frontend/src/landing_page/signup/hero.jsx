@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../api/auth";
 
-function Signup() {
+function Hero() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -242,4 +242,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Hero;

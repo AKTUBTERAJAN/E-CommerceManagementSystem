@@ -207,13 +207,6 @@ const checkLogin = () => {
                 </Link>
               </li>
 
-              {/* <li className="nav-item">
-                <Link className="nav-link text-white fw-bold" to="/myprofile">
-                  <i className="fa fa-user me-1" aria-hidden="true"></i>
-                  My Profile
-                </Link>
-              </li> */}
-
               <li className="nav-item">
                 <Link className="nav-link text-white fw-bold" to="/signin">
                   <i className="fa fa-sign-in me-1" aria-hidden="true"></i>
