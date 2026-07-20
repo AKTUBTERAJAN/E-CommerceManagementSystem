@@ -1,6 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 function Footer() {
+  const { pathname } = useLocation();
+        useEffect(() => {
+            window.scrollTo(0, 0);
+    }, 
+    [pathname]);
     return (
     <footer className=' border-top ' >
     
@@ -192,26 +199,26 @@ function Footer() {
           </a>{" "}
           2026 | Developed By{" "}
           <u>
-            <a
-              href="/customersupport"
-              style={{ color: "rgb(255, 166, 0)" }}
-            >
-              Mr. RAJAN KUSHWAHA
-            </a>
+           <Link
+            to="/customersupport"
+            style={{ color: "rgb(255, 166, 0)" }}
+          >
+            Mr. RAJAN KUSHWAHA
+          </Link>
           </u>
         </p>
       </div>
 
       <div className="col-6">
-      <Link
-  className="nav-link"
-  to="/privacy"
-  style={{
-    color: "rgb(255, 166, 0)",
-    textDecoration: "none",
-    lineHeight: "40px",
-  }}
->
+                <Link
+            className="nav-link"
+            to="/privacy"
+            style={{
+              color: "rgb(255, 166, 0)",
+              textDecoration: "none",
+              lineHeight: "40px",
+            }}
+          >
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
