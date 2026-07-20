@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState  } from "react";
 import{Route,Routes, useLocation, useNavigate} from 'react-router-dom';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -34,23 +34,47 @@ import PaymentOptions from "./landingpage/Paymentoptions/paymentoption";
 function Homepage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [ready, setReady] = useState(false);
 
-  useEffect(() => {
+useEffect(() => {
+  const init = async () => {
     const params = new URLSearchParams(location.search);
     const token = params.get("token");
 
     if (token) {
       localStorage.setItem("token", token);
-      navigate(location.pathname || "/", { replace: true });
-      return;
+
+      // URL se token hata do
+      window.history.replaceState({}, "", location.pathname);
     }
 
     if (!localStorage.getItem("token")) {
       window.location.href =
-        import.meta.env.VITE_FRONTEND_SIGNIN_URL || "http://localhost:5173/signin";
+        import.meta.env.VITE_FRONTEND_SIGNIN_URL ||
+        "http://localhost:5173/signin";
+      return;
     }
-  }, [location.pathname, location.search, navigate]);
 
+    setReady(true);
+  };
+
+  init();
+}, []);
+ if (!ready) {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontSize: "22px",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
   return (
     <>
         <Navbar />
