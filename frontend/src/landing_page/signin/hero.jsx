@@ -34,8 +34,7 @@ const handleSubmit = async (e) => {
     alert(data.message || "Login Successful");
 
     // Frontend (5174) par token ke saath redirect
-    window.location.href =
-      `bigmall-dashboard.vercel.app?token=${encodeURIComponent(data.token)}`;
+    window.location.href ="bigmall-dashboard.vercel.app";
 
   } catch (error) {
     alert(
