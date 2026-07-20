@@ -24,26 +24,26 @@ function FreshCard({ product }) {
 
   return (
     <>
-    {message && (
-  <div
-    style={{
-      position: "fixed",
-      top: "20px",
-      right: "20px",
-      zIndex: "9999",
-      background: "#28a745",
-      color: "#fff",
-      padding: "12px 20px",
-      borderRadius: "8px",
-      boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
-      width: "300px",
-      fontWeight: "600"
-    }}
-  >
-    <i className="fa fa-check-circle me-2"></i>
-    {message}
-  </div>
-)}
+        {message && (
+          <div
+            style={{
+              position: "fixed",
+              top: "20px",
+              right: "20px",
+              zIndex: "9999",
+              background: "#28a745",
+              color: "#fff",
+              padding: "12px 20px",
+              borderRadius: "8px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+              width: "300px",
+              fontWeight: "600"
+            }}
+          >
+          <i className="fa fa-check-circle me-2"></i>
+          {message}
+        </div>
+      )}
     <div className="col-lg-3 col-md-6 col-sm-12">
 
       {/* Start Product */}
@@ -115,24 +115,24 @@ function FreshCard({ product }) {
           </div>
 
          <button
-  className="btn bg-mycolor text-light mt-2"
-  style={{ width: "60px" }}
-  onClick={() => {
-    if (qty === 0) {
-      alert("Please select quantity first");
-      return;
-    }
+          className="btn bg-mycolor text-light mt-2"
+          style={{ width: "60px" }}
+          onClick={() => {
+            if (qty === 0) {
+              alert("Please select quantity first");
+              return;
+            }
 
-    addToCart(product, qty);
-     setMessage(" Product Added Successfully");
+            addToCart(product, qty);
+            setMessage(" Product Added Successfully");
 
-  setTimeout(() => {
-    setMessage("");
-  }, 2000);
-  }}
->
-  Add
-</button>
+            setTimeout(() => {
+              setMessage("");
+            }, 2000);
+            }}
+            >
+                Add
+        </button>
           <button
             className="btn btn-outline-danger w-100 mt-2"
             onClick={() => addToWatchList(product)}

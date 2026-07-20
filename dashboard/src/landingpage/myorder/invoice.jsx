@@ -26,12 +26,7 @@ const downloadInvoice = (order) => {
 
     startY: 90,
 
-    head: [[
-      "Product",
-      "Qty",
-      "Price",
-      "Total"
-    ]],
+    head: [["Product","Qty","Price","Total"]],
 
     body: [[
       order.subcategory_name,

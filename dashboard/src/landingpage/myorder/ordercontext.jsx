@@ -1,10 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import {
-  createOrder,
-  deleteOrderApi,
-  getMyOrders,
-  updateOrderStatusApi,
-} from "../../api/orders";
+import {createOrder,deleteOrderApi,getMyOrders,updateOrderStatusApi} from "../../api/orders";
 
 const OrderContext = createContext();
 

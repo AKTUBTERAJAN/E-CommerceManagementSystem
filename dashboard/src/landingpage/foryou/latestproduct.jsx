@@ -23,16 +23,6 @@ function LatestProducts({ pdata = [] }) {
       }));
     }
   };
-
-  // const addToCart = (item) => {
-  //   alert(
-  //     `${item.subcategory_name}\nQuantity : ${qty[item.id] || 0} added successfully.`
-  //   );
-
-  //   // MERN Project me yaha API call karni hai
-  //   // axios.post("/api/cart", {...})
-  // };
-
   return (
   <>
    {message && (
@@ -56,7 +46,7 @@ function LatestProducts({ pdata = [] }) {
   </div>
 )}
  
-    <div className="row product fs-4 p-3">
+<div className="row product fs-4 p-3">
 
       <div className="fs-3 mb-3">
         Latest <b className="txt-mycolor">Product</b>
@@ -129,29 +119,29 @@ function LatestProducts({ pdata = [] }) {
               </div>
 
               <button
-  className="btn bg-mycolor text-light mt-2"
-  style={{ width: "60px" }}
-  onClick={() => {
+                className="btn bg-mycolor text-light mt-2"
+                style={{ width: "60px" }}
+                onClick={() => {
 
-    const quantity = qty[item._id] || 0;
+                  const quantity = qty[item._id] || 0;
 
-    if (quantity === 0) {
-      alert("Please select quantity first");
-      return;
-    }
+                  if (quantity === 0) {
+                    alert("Please select quantity first");
+                    return;
+                  }
 
-    addToCart(item, quantity);
+                  addToCart(item, quantity);
 
-    setMessage("Product Added Successfully");
+                  setMessage("Product Added Successfully");
 
-setTimeout(() => {
-  setMessage("");
-}, 1000);
+                  setTimeout(() => {
+                    setMessage("");
+                  }, 1000);
 
-  }}
->
-  Add
-</button>
+                    }}
+                  >
+                    Add
+              </button>
 
             </div>
           </div>

@@ -7,7 +7,7 @@ function TodayDeals({ deals = [] }) {
   const [message, setMessage] = useState("");
   const [qty, setQty] = useState({});
 
-    const { addToCart } = useCart();
+  const { addToCart } = useCart();
     useEffect(() => {
   const fetchUser = async () => {
     try {
@@ -17,7 +17,7 @@ function TodayDeals({ deals = [] }) {
       if (res.name) {
         setUserName(res.name);
       }
-      // Agar response { user: {...} } ho
+      // Agar response user: ho
       else if (res.user?.name) {
         setUserName(res.user.name);
       }
@@ -49,65 +49,47 @@ function TodayDeals({ deals = [] }) {
       });
     }
   };
-
-  // const addToCart = (item) => {
-  //   alert(
-  //     `${item.subcategory_name} Added\nQuantity : ${qty[item.id] || 0}`
-  //   );
-  // };
-
   return (
   <>
-   {message && (
-  <div
-    style={{
-      position: "fixed",
-      top: "20px",
-      right: "20px",
-      zIndex: "9999",
-      background: "#28a745",
-      color: "#fff",
-      padding: "12px 20px",
-      borderRadius: "8px",
-      boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
-      width: "300px",
-      fontWeight: "600"
-    }}
-  >
-    <i className="fa fa-check-circle me-2"></i>
-    {message}
-  </div>
-)}
-    <div className="row py-3">
-
-     <div className="mb-4">
-
-  <h2 className="fw-bold">
-    Hi <span className="txt-mycolor">{userName}</span> 👋
-  </h2>
-
-  <p
-    className="text-secondary"
-    style={{
-      fontSize: "17px",
-      marginTop: "-5px"
-    }}
-  >
-    Here are today's best deals selected especially for you.
-  </p>
-
-</div>
-
-      {deals.map((item) => (
-
+      {message && (
         <div
-          className="col-lg-2 col-md-3 col-sm-6"
-          key={item.id}
-        >
-
-          <div className="card  mt-2">
-
-            <span
+          style={{
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            zIndex: "9999",
+            background: "#28a745",
+            color: "#fff",
+            padding: "12px 20px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+            width: "300px",
+            fontWeight: "600"
+          }}
+          >
+            <i className="fa fa-check-circle me-2"></i>
+            {message}
+          </div>
+        )}
+  <div className="row py-3">
+    <div className="mb-4">
+      <h2 className="fw-bold">
+        Hi <span className="txt-mycolor">{userName}</span> 👋
+      </h2>
+      <p
+        className="text-secondary"
+        style={{
+          fontSize: "17px",
+          marginTop: "-5px"
+        }}
+      >
+         Here are today's best deals selected especially for you.
+      </p>
+    </div>
+    {deals.map((item) => (
+    <div className="col-lg-2 col-md-3 col-sm-6"key={item.id}>
+      <div className="card  mt-2">
+        <span
               className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"
             >
               {item.total_discount} %
@@ -166,36 +148,33 @@ function TodayDeals({ deals = [] }) {
 
               
                <button
-  className="btn bg-mycolor text-light mt-2"
-  style={{ width: "60px" }}
-  onClick={() => {
+                  className="btn bg-mycolor text-light mt-2"
+                  style={{ width: "60px" }}
+                  onClick={() => {
 
-    const quantity = qty[item.id] || 0;
+                    const quantity = qty[item.id] || 0;
 
-    if (quantity === 0) {
-      alert("Please select quantity first");
-      return;
-    }
+                    if (quantity === 0) {
+                      alert("Please select quantity first");
+                      return;
+                    }
 
-    addToCart(item, quantity);
+                    addToCart(item, quantity);
 
-     setMessage("Product Added Successfully");
+                    setMessage("Product Added Successfully");
 
-setTimeout(() => {
-  setMessage("");
-}, 1000);
+                    setTimeout(() => {
+                      setMessage("");
+                    }, 1000);
 
 
-  }}
->
-  Add
-</button>
-
+                      }}
+                    >
+                      Add
+                </button>
+              </div>
             </div>
-
           </div>
-
-        </div>
 
       ))}
 

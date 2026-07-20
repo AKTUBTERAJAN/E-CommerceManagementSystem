@@ -2,6 +2,7 @@ import React from "react";
 
 function Hero() {
   return (
+  <>
     <div className="container mt-5 mb-5">
 
       {/* Header */}
@@ -76,6 +77,7 @@ function Hero() {
       </div>
 
     </div>
+  </>
   );
 }
 
