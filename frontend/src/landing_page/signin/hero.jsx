@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import { loginUser } from "../../api/auth";
-import { getCurrentUser } from "../../../../dashboard/src/api/user";
 
 const API_URL =import.meta.env.VITE_API_URL || "https://bigmall-backend.onrender.com";
 const DASHBOARD_URL =import.meta.env.VITE_DASHBOARD_URL || "https://bigmall-dashboard.vercel.app";
@@ -35,7 +34,7 @@ const handleSubmit = async (e) => {
     localStorage.setItem("token", data.token);
 
     // Token ke baad current user fetch karo
-    const user = await getCurrentUser();
+    //const user = await getCurrentUser();
 
     // User save
     localStorage.setItem("user", JSON.stringify(user));
