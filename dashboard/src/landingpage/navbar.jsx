@@ -17,7 +17,7 @@ function Navbar() {
 
   alert("Sign Out Successfully");
 
-  window.location.href = "bigmall-frontend-sage.vercel.app/";
+  window.location.href = "http://localhost:5173/";
 };
   useEffect(() => {
     const loadUser = async () => {
@@ -138,27 +138,27 @@ function Navbar() {
               Cart &nbsp;
               <i className="fa fa-shopping-cart " aria-hidden="true"></i>
               <span className="badge bg-light text-dark ms-2">
-                {cart.reduce((total, item) => total + item.quantity, 0)}
-              </span>
+  {cart.reduce((total, item) => total + item.quantity, 0)}
+</span>
             </button>
           </Link>
            <span
-              className="me-2 fw-semibold d-flex align-items-center"
-            >
-              {user?.name?.split(" ")[0] || "Default User"}
+  className="me-2 fw-semibold d-flex align-items-center"
+>
+  {user?.name?.split(" ")[0] || "Default User"}
 
-              <img
-                src={getFileUrl(user?.profilePic)}
-                alt="User"
-                className="img-thumbnail ms-2"
-                style={{
-                  height: "40px",
-                  width: "40px",
-                  borderRadius: "50%",
-                  objectFit: "contain",
-                }}
-              />
-            </span>
+  <img
+    src={getFileUrl(user?.profilePic)}
+    alt="User"
+    className="img-thumbnail ms-2"
+    style={{
+      height: "40px",
+      width: "40px",
+      borderRadius: "50%",
+      objectFit: "contain",
+    }}
+  />
+</span>
 
             <i
               className="fa-solid fa-circle-user"
@@ -265,16 +265,22 @@ function Navbar() {
                   Your Account
                 </NavLink>                
               </li>  
-              <li className="nav-item">
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="nav-link-custom signout-btn"
-                >
-                  <i className="fa fa-unlock-alt me-1"></i>
-                  Sign Out
-                </button>
-              </li>
+<li className="nav-item">
+  <button
+    type="button"
+    onClick={logout}
+    className="nav-link-custom signout-btn"
+  >
+    <i className="fa fa-unlock-alt me-1"></i>
+    Sign Out
+  </button>
+</li>
+              {/* <li className="nav-item">
+                <Link className="nav-link text-white fw-bold" to="/signin">
+                  <i className="fa fa-sign-in me-1" aria-hidden="true"></i>
+                  Sign In
+                </Link>
+              </li> */}
 
             </ul>
           </div>
