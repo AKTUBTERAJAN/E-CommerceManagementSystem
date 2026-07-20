@@ -34,7 +34,7 @@ const handleSubmit = async (e) => {
     localStorage.setItem("token", data.token);
 
     // Token ke baad current user fetch karo
-    //const user = await getCurrentUser();
+    const user = await getCurrentUser();
 
     // User save
     localStorage.setItem("user", JSON.stringify(user));
