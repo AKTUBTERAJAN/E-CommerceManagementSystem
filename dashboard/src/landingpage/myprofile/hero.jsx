@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getFileUrl } from "../../api/api";
 import { getCurrentUser, updateUserProfile } from "../../api/user";
+import { DASHBOARD_URL } from "../../config";
 
 function MyProfile() {
   const [showForm, setShowForm] = useState(false);
@@ -30,24 +31,24 @@ function MyProfile() {
 useEffect(() => {
   const loadUser = async () => {
     try {
-      // URL se token lo
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
 
-      // Agar token mila to localStorage me save karo
       if (token) {
         localStorage.setItem("token", token);
 
-        // URL clean kar do
-        window.history.replaceState({}, "", "/myprofile");
+        // URL clean
+        window.history.replaceState(
+          {},
+          "",
+          `${DASHBOARD_URL}/myprofile`
+        );
       }
 
-      // Ab current user load karo
       const userData = await getCurrentUser();
 
       setUserState(userData);
 
-      // User bhi save kar lo
       localStorage.setItem("user", JSON.stringify(userData));
 
     } catch (error) {
