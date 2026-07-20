@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { loginUser } from "../../api/auth";
+import { getCurrentUser } from "../../api/user";
 
 const API_URL =import.meta.env.VITE_API_URL || "https://bigmall-backend.onrender.com";
 const DASHBOARD_URL =import.meta.env.VITE_DASHBOARD_URL || "https://bigmall-dashboard.vercel.app";
@@ -30,20 +31,21 @@ const handleSubmit = async (e) => {
       formData.password
     );
 
+    // Token save
     localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+
+    // Token ke baad current user fetch karo
+    const user = await getCurrentUser();
+
+    // User save
+    localStorage.setItem("user", JSON.stringify(user));
 
     alert(data.message || "Login Successful");
 
-    window.location.href =
-      `${DASHBOARD_URL}/myprofile?token=${encodeURIComponent(data.token)}`;
+    window.location.href = `${DASHBOARD_URL}/myprofile`;
 
   } catch (error) {
-    alert(
-      error.response?.data?.message ||
-      error.message ||
-      "Login Failed"
-    );
+    alert(error.message || "Login Failed");
   } finally {
     setLoading(false);
   }
