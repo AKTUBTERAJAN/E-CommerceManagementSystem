@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useCart } from "./cardconext";
 import { useNavigate } from "react-router-dom";
 
-function MyCart() {
+function Hero() {
   const navigate = useNavigate();
   const { cart, removeCart } = useCart();
   const cartData = cart;
@@ -149,4 +149,4 @@ function MyCart() {
   );
 }
 
-export default MyCart;
+export default Hero;
