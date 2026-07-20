@@ -30,21 +30,20 @@ const handleSubmit = async (e) => {
       formData.password
     );
 
-    // Token save
     localStorage.setItem("token", data.token);
-
-    // Token ke baad current user fetch karo
-    const user = await getCurrentUser();
-
-    // User save
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(data.user));
 
     alert(data.message || "Login Successful");
 
-    window.location.href = `${DASHBOARD_URL}/myprofile`;
+    window.location.href =
+      `${DASHBOARD_URL}/myprofile?token=${encodeURIComponent(data.token)}`;
 
   } catch (error) {
-    alert(error.message || "Login Failed");
+    alert(
+      error.response?.data?.message ||
+      error.message ||
+      "Login Failed"
+    );
   } finally {
     setLoading(false);
   }
