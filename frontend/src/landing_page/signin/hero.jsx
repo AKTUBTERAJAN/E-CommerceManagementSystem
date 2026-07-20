@@ -2,6 +2,9 @@ import React from "react";
 import { useState } from "react";
 import { loginUser } from "../../api/auth";
 
+const API_URL =import.meta.env.VITE_API_URL || "https://bigmall-backend.onrender.com";
+const DASHBOARD_URL =import.meta.env.VITE_DASHBOARD_URL || "https://bigmall-dashboard.vercel.app";
+
 function Hero() {
   const [formData, setFormData] = useState({
     email: "",
@@ -27,15 +30,13 @@ const handleSubmit = async (e) => {
       formData.password
     );
 
-    // Login Project (5173) me save
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
 
     alert(data.message || "Login Successful");
 
-    // Frontend (5174) par token ke saath redirect
     window.location.href =
-      `http://localhost:5174/myprofile?token=${encodeURIComponent(data.token)}`;
+      `${DASHBOARD_URL}/myprofile?token=${encodeURIComponent(data.token)}`;
 
   } catch (error) {
     alert(
