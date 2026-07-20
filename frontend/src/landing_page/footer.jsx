@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 function Footer() {
-
-return (
- <>
+    return (
     <footer className=' border-top ' >
     
       <div className="row ufooter bg-dark">
@@ -226,9 +224,7 @@ return (
     </div>   
         
     </footer> 
-</> 
-
-  );
+     );
 }
 
 export default Footer;
