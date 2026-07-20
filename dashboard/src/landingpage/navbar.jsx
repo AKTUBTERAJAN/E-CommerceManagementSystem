@@ -4,20 +4,21 @@ import { useCart } from "./mycard/cardconext";
 import { getFileUrl } from "../api/api";
 import { getCurrentUser } from "../api/user";
 import { useNavigate } from "react-router-dom";
-
+import { FRONTEND_URL } from "../config";
 
 function Navbar() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
    const [sticky, setSticky] = useState(false);
    const { cart } = useCart();
-  const logout = () => {
+ 
+   const logout = () => {
   localStorage.removeItem("user");
   localStorage.removeItem("token");
 
   alert("Sign Out Successfully");
 
-  window.location.href = "http://localhost:5173/";
+  window.location.href = FRONTEND_URL;
 };
   useEffect(() => {
     const loadUser = async () => {
