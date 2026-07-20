@@ -51,7 +51,7 @@ function Home() {
   ];
 
   //Todays Deals
-    const [deals, setDeals] = useState([]);
+const [deals, setDeals] = useState([]);
 
 //Latest Product 
 const [latestProducts, setLatestProducts] = useState([]);
@@ -97,6 +97,7 @@ const [latestProducts, setLatestProducts] = useState([]);
   }, []);
 
   return (
+   <>
     <div className="container-fluid">
       <div className="row p-2">
         <LeftProducts />
@@ -106,6 +107,7 @@ const [latestProducts, setLatestProducts] = useState([]);
        <TodayDeals deals={todayDeals} />
        <LatestProducts pdata={latestItems} />
     </div>
+ </>
   );
 }
 

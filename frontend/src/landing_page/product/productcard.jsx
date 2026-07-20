@@ -21,7 +21,7 @@ function ProductCard({ product }) {
 
   if (!user) {
     alert("Please Login First");
-    navigate("/signin");   // Apna login route yahan likho
+    navigate("/signin");   
     return;
   }
 
@@ -32,11 +32,6 @@ function ProductCard({ product }) {
 
   alert(`${product.subcategory_name} Added to Cart\nQuantity : ${qty}`);
 
-  // Future MERN Backend
-  // axios.post("http://localhost:5000/api/cart",{
-  //   ...product,
-  //   quantity: qty
-  // })
 };
 
   return (

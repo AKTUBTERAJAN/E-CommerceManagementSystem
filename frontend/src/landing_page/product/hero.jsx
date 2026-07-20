@@ -35,6 +35,7 @@ function Hero() {
     : products;
 
   return (
+   <>
     <div className="row p-4">
       <div className="col-sm-2">
         <ProductSidebar subcat={subcat} />
@@ -55,6 +56,7 @@ function Hero() {
         </div>
       </div>
     </div>
+ </>
   );
 }
 

@@ -52,6 +52,7 @@ function LeftProducts() {
   ];
 
   return (
+  <>
     <div className="col-sm-5">
     <div className="marquee  ">
 
@@ -113,6 +114,7 @@ function LeftProducts() {
         />
       </a>
     </div>
+  </>
   );
 }
 

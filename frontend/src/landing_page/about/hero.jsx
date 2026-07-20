@@ -52,8 +52,8 @@ function Hero() {
           most customer-centric company, Earth’s best employer, and Earth’s
           safest place to work.
                  technology, and TheClimate Pledge are some of the things pioneered by Big Mall.
-    </div>
-</div>
+        </div>
+      </div>
 
     </>
   );

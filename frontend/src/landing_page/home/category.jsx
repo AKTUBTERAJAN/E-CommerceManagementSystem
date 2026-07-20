@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 function Category({ cdata }) {
     
   return (
+  <>
     <div className="row category bg-mycolor py-4 p-4">
       {cdata.map((item) => (
         <div className="col-lg-2 col-md-4 col-sm-6 mb-3" key={item._id || item.id}>
@@ -37,6 +38,7 @@ function Category({ cdata }) {
         </div>
       ))}
     </div>
+  </>
   );
 }
 

@@ -2,7 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function ProductSidebar({ subcat = [] }) {
-  return (
+  
+return (
+  <>
     <div>
       <ul className="list-group">
         <li className="list-group-item bg-mycolor text-light">
@@ -37,6 +39,7 @@ function ProductSidebar({ subcat = [] }) {
         ))}
       </ul>
     </div>
+</>
   );
 }
 

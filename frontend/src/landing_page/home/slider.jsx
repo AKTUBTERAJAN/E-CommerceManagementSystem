@@ -6,6 +6,7 @@ import slide3 from "../../assets/3.jpg";
 
 function Slider() {
   return (
+  <>
     <div className="col-sm-7 p-3">
 
       <div
@@ -130,6 +131,8 @@ function Slider() {
       </div>
 
     </div>
+
+  </>
   );
 }
 

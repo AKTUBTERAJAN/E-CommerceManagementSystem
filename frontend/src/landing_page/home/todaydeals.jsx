@@ -39,7 +39,8 @@ function TodayDeals({ deals = [] }) {
 };
 
 
-  return (
+return (
+  <>
     <div className="row py-3">
 
       <div className="fs-3">
@@ -129,6 +130,7 @@ function TodayDeals({ deals = [] }) {
       ))}
 
     </div>
+  </>
   );
 }
 

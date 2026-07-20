@@ -36,6 +36,7 @@ const addToCart = (product) => {
   
 };
   return (
+   <>
     <div className="row product fs-4 p-3">
 
       <div className="fs-3 mb-3">
@@ -122,6 +123,7 @@ const addToCart = (product) => {
       ))}
 
     </div>
+ </>
   );
 }
 

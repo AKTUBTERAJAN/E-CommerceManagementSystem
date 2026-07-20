@@ -1,6 +1,8 @@
 import React from 'react';
 function NotFound() {
-    return (
+
+return (
+    <>
         <div className='container p-5 mb-5'style={{color:"#424242",fontSize:"14px"}}>
             <div className='row text-center'>
                 <h1 className='mt-5 fs-2'>404 Not Found</h1>
@@ -9,7 +11,8 @@ function NotFound() {
             </div>
             
         </div>
-      );
+    </>
+    );
 }
 
 export default NotFound;
