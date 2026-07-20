@@ -199,7 +199,7 @@ function Footer() {
           </a>{" "}
           2026 | Developed By{" "}
           <u>
-           <Link className="nav-link"
+           <Link 
             to="/customersupport"
             style={{ color: "rgb(255, 166, 0)" }}
           >
