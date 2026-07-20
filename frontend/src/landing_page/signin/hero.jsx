@@ -35,7 +35,7 @@ const handleSubmit = async (e) => {
 
     // Frontend (5174) par token ke saath redirect
     window.location.href =
-      `http://localhost:5174/myprofile?token=${encodeURIComponent(data.token)}`;
+      `bigmall-dashboard.vercel.app?token=${encodeURIComponent(data.token)}`;
 
   } catch (error) {
     alert(
