@@ -1,3 +1,5 @@
+//Home page
+
 import React, { useEffect, useState } from "react";
 import LeftProducts from "./leftproduct";
 import Slider from "./slider";

@@ -1,3 +1,5 @@
+//profile page
+
 import React, { useEffect, useState } from "react";
 import { getFileUrl } from "../../api/api";
 import { getCurrentUser, updateUserProfile } from "../../api/user";
