@@ -1,0 +1,35 @@
+
+services:
+  - type: web
+    name: bigmall-backend
+    env: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGO_URI
+        sync: false # Set securely in Render Dashboard
+      - key: FRONTEND_URL
+        value: https://bigmall-frontend-sage.vercel.app
+      - key: DASHBOARD_URL
+        value: https://bigmall-dashboard.vercel.app
+      - key: VITE_FRONTEND_URL
+        value: https://bigmall-frontend-sage.vercel.app
+      - key: VITE_DASHBOARD_URL
+        value: https://bigmall-dashboard.vercel.app
+      - key: OPENAI_API_KEY
+        sync: false # Set securely in Render Dashboard
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: DNS_SERVERS
+        value: 8.8.8.8,1.1.1.1
