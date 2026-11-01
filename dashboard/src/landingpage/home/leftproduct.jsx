@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { useCart } from "../mycard/cardconext";
 
 import masala from "../../assets/masala1.png";
@@ -48,6 +49,14 @@ function LeftProducts() {
       name: "Horlicks",
       image: horlicks,
       qty: "1 Kg",
+      oldPrice: "550",
+      newPrice: "520",
+    },
+    {
+      id: 22,
+      name: "Ganesh Atta",
+      image: ganesh,
+      qty: "1 Kg",
       oldPrice: "250",
       newPrice: "200",
     },
@@ -55,57 +64,63 @@ function LeftProducts() {
 
   return (
     <div className="col-sm-5">
-    <div className="marquee  ">
+      <div className="marquee">
+        {/* Marquee */}
+        <div className="marquee-content">
+          {products.map((item) => (
+            <div className="card mb-3" key={item.id}>
+              <div className="row g-0">
+                <div className="col-md-4">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="img-fluid rounded-start"
+                  />
+                </div>
 
-      {/* Marquee */}
-      <div className="marquee-content ">
-        {products.map((item) => (
-          <div className="card mb-3" key={item.id}>
-            <div className="row g-0">
+                <div className="col-md-8">
+                  <div className="card-body">
+                    <h5 className="card-title">{item.name}</h5>
 
-              <div className="col-md-4">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="img-fluid rounded-start"
-                />
-              </div>
+                    <p className="card-text">
+                      <i className="fa fa-inr" aria-hidden="true"></i>{" "}
+                      {item.qty} ||{" "}
+                      <s>{item.oldPrice}/-</s>{" "}
+                      <b>{item.newPrice}/-</b>
 
-              <div className="col-md-8">
-                <div className="card-body">
+                      <br />
+                      <br />
 
-                  <h5 className="card-title">{item.name}</h5>
+                      <button
+                        className="btn btn-outline-success"
+                        onClick={() =>
+                          addToCart({
+                            id: item.id,
+                            name: item.name,
+                            price: Number(item.newPrice),
+                            image: item.image,
+                            quantity: 1,
+                          })
+                        }
+                      >
+                        Cart{" "}
+                        <i className="fa fa-shopping-cart " aria-hidden="true"></i>
+                      </button>
+                    </p>
 
-                  <p className="card-text">
-                    <i class="fa fa-inr" aria-hidden="true"></i>{" "}
-                    {item.qty} ||{" "}
-                    <s>{item.oldPrice}/-</s>{" "}
-                    <b>{item.newPrice}/-</b>
-
-                    <br />
-                    <br />
-
-                    <button className="btn btn-outline-success">
-                      Cart{" "}
-                      <i class="fa fa-shopping-cart " aria-hidden="true"></i>
-                    </button>
-                  </p>
-
-                  <p className="card-text">
-                    <small className="text-body-secondary">
-                      Last updated 3 mins ago
-                    </small>
-                  </p>
-
+                    <p className="card-text">
+                      <small className="text-body-secondary">
+                        Last updated 3 mins ago
+                      </small>
+                    </p>
+                  </div>
                 </div>
               </div>
-
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-     {/* Bottom Image */}
+      {/* Bottom Image */}
       <Link to="/product">
         <img
           src={ganesh}

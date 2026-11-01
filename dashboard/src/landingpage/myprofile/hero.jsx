@@ -43,7 +43,7 @@ useEffect(() => {
         window.history.replaceState(
           {},
           "",
-          `${DASHBOARD_URL}/myprofile`
+          window.location.pathname
         );
       }
 

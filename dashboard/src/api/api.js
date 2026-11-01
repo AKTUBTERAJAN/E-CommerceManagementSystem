@@ -1,12 +1,11 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-const FILE_URL = API_URL.replace(/\/api$/, "");
+import { API_URL, FILE_URL } from "../config";
 
 const getToken = () => localStorage.getItem("token");
 
 export const getFileUrl = (path) => {
   if (!path) return "media/user.png";
   if (path.startsWith("http")) return path;
-  return `${FILE_URL}${path}`;
+  return `${FILE_URL}${path.startsWith("/") ? "" : "/"}${path}`;
 };
 
 export const apiRequest = async (path, options = {}) => {
@@ -16,11 +15,12 @@ export const apiRequest = async (path, options = {}) => {
     ...options.headers,
   };
 
-  if (token) {
+  if (token && token !== "null" && token !== "undefined") {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_URL}${path}`, {
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  const response = await fetch(`${API_URL}${cleanPath}`, {
     ...options,
     headers,
   });
@@ -28,7 +28,7 @@ export const apiRequest = async (path, options = {}) => {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(data.message || "Request failed");
+    throw new Error(data.message || `Request failed with status ${response.status}`);
   }
 
   return data;

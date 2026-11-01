@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Category from "./category";
 import TodayDeals from "./todaydeals";
 import LatestProducts from "./latestproduct";
+import AIRecommendations from "../../components/AIRecommendations/AIRecommendations";
 
 import { getProducts } from "../../api/products";
 import { getCategories } from "../../api/category";
@@ -58,6 +59,7 @@ function Home() {
       <div className="container-fluid">
         <Category cdata={categories} />
         <TodayDeals deals={deals} />
+        <AIRecommendations limit={4} />
         <LatestProducts pdata={latestProducts} />
       </div>
     </>
