@@ -1,17 +1,19 @@
-import React from "react";
-import Hero from "./hero";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import Hero from "./hero";
+import AISupportSection from "./AISupportSection";
 
 function CustomerSupport() {
   const { pathname } = useLocation();
-          useEffect(() => {
-              window.scrollTo(0, 0);
-      }, 
-      [pathname]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   return (
     <>
-        <Hero />
+      <Hero />
+      <AISupportSection />
     </>
   );
 }
