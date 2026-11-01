@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "../../landing_page/product/productcard";
-import { getRecommendations } from "../../api/products";
+import { getRecommendations, getProducts } from "../../api/products";
 import "./AIRecommendations.css";
 
 function AIRecommendations({ limit = 4, productId = null, sid = null, title = null }) {
@@ -31,7 +31,17 @@ function AIRecommendations({ limit = 4, productId = null, sid = null, title = nu
           setIsPersonalized(Boolean(response.data.personalized));
         }
       } catch (err) {
-        console.error("Failed to load AI recommendations:", err);
+        console.warn("AI recommendations endpoint unavailable, falling back to product list:", err.message);
+        try {
+          const fallbackRes = await getProducts({ limit });
+          if (isMounted && fallbackRes.data) {
+            const list = Array.isArray(fallbackRes.data) ? fallbackRes.data : fallbackRes.data.products || [];
+            setProducts(list.slice(0, limit));
+            setReason("Popular grocery essentials");
+          }
+        } catch {
+          // ignore
+        }
       } finally {
         if (isMounted) setLoading(false);
       }

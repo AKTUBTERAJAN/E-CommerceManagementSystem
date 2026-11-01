@@ -68,6 +68,67 @@ const getStoredAuth = () => {
   }
 };
 
+const getOfflineFallbackResponse = (query, isAuthenticated, language = "en") => {
+  const q = (query || "").toLowerCase();
+  const isHi = language === "hi";
+
+  if (q.includes("return") || q.includes("refund") || q.includes("वापसी") || q.includes("पैसे")) {
+    return isHi
+      ? "📦 **बिग मॉल रिटर्न एवं रिफंड नीति:**\n\n• गैर-खराब होने वाले सामान पर 7 दिनों का आसान रिटर्न उपलब्ध है।\n• ताजे फल, सब्जियां और डेयरी उत्पादों की शिकायत 24 घंटे में करें।\n• स्वीकृत रिफंड सीधे आपके बिग मॉल वॉलेट में तुरंत ट्रांसफर हो जाता है।"
+      : "📦 **Bigmall Return & Refund Policy:**\n\n• Non-perishable items: 7-day hassle-free return window.\n• Perishables (fruits, vegetables, dairy): Report within 24 hours.\n• Approved refunds are credited directly to your Bigmall Wallet immediately.";
+  }
+
+  if (q.includes("delivery") || q.includes("shipping") || q.includes("डिलीवरी")) {
+    return isHi
+      ? "🚚 **डिलीवरी जानकारी:**\n\n• मानक डिलीवरी: 24 से 48 घंटे के भीतर।\n• ₹500 से अधिक के ऑर्डर पर मुफ्त डिलीवरी।\n• ₹500 से कम के ऑर्डर पर मात्र ₹40 डिलीवरी शुल्क।"
+      : "🚚 **Delivery Information:**\n\n• Standard delivery: within 24-48 hours.\n• FREE delivery on orders above ₹500.\n• Flat ₹40 delivery fee for orders below ₹500.";
+  }
+
+  if (q.includes("order") || q.includes("track") || q.includes("ऑर्डर") || q.includes("कहाँ है")) {
+    if (!isAuthenticated) {
+      return {
+        content: isHi
+          ? "🔒 अपने व्यक्तिगत ऑर्डर को ट्रैक करने के लिए कृपया पहले साइन इन करें।"
+          : "🔒 Please sign in to your Bigmall account to track your orders.",
+        requiresLogin: true,
+      };
+    }
+    return isHi
+      ? "📋 आप अपने ऑर्डर की स्थिति और लाइव ट्रैकिंग देखने के लिए साइडबार या 'My Orders' विकल्प पर क्लिक कर सकते हैं।"
+      : "📋 You can view live tracking and milestones for all your active orders in your Dashboard under 'My Orders'.";
+  }
+
+  if (q.includes("cancel") || q.includes("रद्द")) {
+    if (!isAuthenticated) {
+      return {
+        content: isHi
+          ? "🔒 ऑर्डर रद्द करने के लिए कृपया पहले साइन इन करें।"
+          : "🔒 Please sign in to view and cancel active orders.",
+        requiresLogin: true,
+      };
+    }
+    return isHi
+      ? "❌ **ऑर्डर कैंसलेशन:**\n\nडिलीवरी आउट होने से पहले आप अपने 'My Orders' सेक्शन से ऑर्डर रद्द कर सकते हैं। 100% रिफंड सीधे आपके वॉलेट में वापस आ जाएगा।"
+      : "❌ **Order Cancellation:**\n\nYou can cancel orders from 'My Orders' before they are Out for Delivery. The full refund will be credited instantly to your Bigmall Wallet.";
+  }
+
+  if (q.includes("contact") || q.includes("phone") || q.includes("address") || q.includes("संपर्क") || q.includes("care")) {
+    return isHi
+      ? "📍 **बिग मॉल स्टोर व सहायता:**\n\n• पता: बिग मॉल सुपरमार्केट, मुख्य मार्ग, गोमती नगर, लखनऊ (उ.प्र.)\n• फ़ोन: +91 98765 43210\n• ईमेल: support@bigmall.com\n• सहायता समय: सुबह 8:00 से रात 10:00 तक"
+      : "📍 **Bigmall Store & Support:**\n\n• Address: Bigmall Supermarket, Main Street, Gomti Nagar, Lucknow, UP\n• Phone: +91 98765 43210\n• Email: support@bigmall.com\n• Hours: 8:00 AM – 10:00 PM (Daily)";
+  }
+
+  if (q.includes("payment") || q.includes("wallet") || q.includes("पेमेंट") || q.includes("वॉलेट")) {
+    return isHi
+      ? "💳 **भुगतान विकल्प:**\n\nहम UPI (Google Pay, PhonePe, Paytm), नेट बैंकिंग, क्रेडिट/डेबिट कार्ड, कैश ऑन डिलीवरी (COD) और बिग मॉल वॉलेट स्वीकार करते हैं।"
+      : "💳 **Payment Methods:**\n\nWe accept UPI (GPay, PhonePe, Paytm), Net Banking, Cards, Cash on Delivery (COD), and Bigmall Wallet.";
+  }
+
+  return isHi
+    ? "नमस्ते! मैं बिग मॉल AI सहायक हूँ। आप ताज़ा फल, सब्जियां, किराने का सामान, स्टोर नीतियां, डिलीवरी समय या रिफंड के बारे में पूछ सकते हैं।"
+    : "Hello! I am your Bigmall Shopping Assistant. You can ask me about fresh groceries, today's deals, delivery timings, store policies, or track your orders.";
+};
+
 const getChatStorageKey = (isAuth, userObj) => {
   if (isAuth && userObj && (userObj._id || userObj.id || userObj.email)) {
     const uid = userObj._id || userObj.id || userObj.email;
@@ -286,26 +347,23 @@ function AIChatbot() {
         throw new Error("No response content received from assistant.");
       }
     } catch (err) {
-      console.error("AI Chat error:", err);
-      let errorText =
-        language === "hi"
-          ? "क्षमा करें, AI असिस्टेंट से संपर्क करने में समस्या हुई।"
-          : "Sorry, couldn't reach the AI assistant.";
+      console.warn("Dashboard AI backend unreachable, activating smart client fallback:", err.message);
 
-      if (err.message) {
-        errorText = err.message;
-      }
+      const fallback = getOfflineFallbackResponse(textToSend, isAuthenticated, language);
+      const isObject = typeof fallback === "object" && fallback !== null;
+      const content = isObject ? fallback.content : fallback;
+      const isAuthReq = isObject ? Boolean(fallback.requiresLogin) : false;
 
-      setLastFailedMessage(textToSend);
+      setLastFailedMessage(null);
 
-      const errorMsg = {
-        id: `err-${Date.now()}`,
+      const fallbackMsg = {
+        id: `fb-${Date.now()}`,
         role: "assistant",
-        content: errorText,
-        isError: true,
+        content,
+        requiresLogin: isAuthReq,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
-      setMessages((prev) => [...prev, errorMsg]);
+      setMessages((prev) => [...prev, fallbackMsg]);
     } finally {
       setIsLoading(false);
     }

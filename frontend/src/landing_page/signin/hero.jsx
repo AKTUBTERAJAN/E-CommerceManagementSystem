@@ -1,13 +1,32 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../api/auth";
 import { DASHBOARD_URL } from "../../config";
 
 function Hero() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("action") === "logout") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("bigmall_ai_chat_history");
+      localStorage.removeItem("bigmall_ai_chat_guest");
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("bigmall_ai_chat_user_")) {
+          localStorage.removeItem(key);
+        }
+      });
+      window.dispatchEvent(new Event("storage"));
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -29,11 +48,21 @@ function Hero() {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      window.dispatchEvent(new Event("storage"));
 
       alert(data.message || "Login Successful");
 
-      window.location.href =
-        `${DASHBOARD_URL}/myprofile?token=${encodeURIComponent(data.token)}`;
+      const params = new URLSearchParams(window.location.search);
+      const redirect = params.get("redirect");
+
+      if (redirect === "dashboard") {
+        window.location.href = `${DASHBOARD_URL}/myprofile?token=${encodeURIComponent(data.token)}`;
+      } else if (redirect && redirect.startsWith("/")) {
+        navigate(redirect);
+      } else {
+        // Return to store so authenticated user can enjoy personalized shopping and AI features
+        navigate("/");
+      }
 
     } catch (error) {
       alert(

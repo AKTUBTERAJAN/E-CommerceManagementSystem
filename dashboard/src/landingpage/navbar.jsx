@@ -20,7 +20,14 @@ function Navbar() {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     localStorage.removeItem("bigmall_ai_chat_history_dashboard");
+    localStorage.removeItem("bigmall_ai_chat_guest");
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("bigmall_ai_chat_user_")) {
+        localStorage.removeItem(key);
+      }
+    });
 
+    window.dispatchEvent(new Event("storage"));
     alert("Sign Out Successfully");
 
     window.location.href = `${FRONTEND_URL}/signin?action=logout`;

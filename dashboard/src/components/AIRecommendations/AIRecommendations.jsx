@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "../../landingpage/product/productcard";
-import { getRecommendations } from "../../api/products";
+import { getRecommendations, getProducts } from "../../api/products";
 import "./AIRecommendations.css";
 
 function AIRecommendations({ limit = 4, productId = null, sid = null, title = null }) {
@@ -31,7 +31,17 @@ function AIRecommendations({ limit = 4, productId = null, sid = null, title = nu
           setIsPersonalized(Boolean(response.personalized));
         }
       } catch (err) {
-        console.error("Failed to load dashboard AI recommendations:", err);
+        console.warn("Dashboard AI recommendations endpoint unavailable, falling back to product list:", err.message);
+        try {
+          const fallbackRes = await getProducts({ limit });
+          if (isMounted && fallbackRes) {
+            const list = Array.isArray(fallbackRes) ? fallbackRes : fallbackRes.products || [];
+            setProducts(list.slice(0, limit));
+            setReason("Popular grocery essentials");
+          }
+        } catch {
+          // ignore
+        }
       } finally {
         if (isMounted) setLoading(false);
       }

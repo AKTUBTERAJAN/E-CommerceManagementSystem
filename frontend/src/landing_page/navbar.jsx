@@ -21,24 +21,74 @@ function Navbar() {
   });
 
   useEffect(() => {
+    const syncUser = () => {
+      try {
+        const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user");
+        if (!token || token === "null" || token === "undefined") {
+          setCurrentUser(null);
+        } else {
+          setCurrentUser(user && user !== "null" && user !== "undefined" ? JSON.parse(user) : null);
+        }
+      } catch {
+        setCurrentUser(null);
+      }
+    };
+
     const params = new URLSearchParams(window.location.search);
     if (params.get("action") === "logout") {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("bigmall_ai_chat_history");
       localStorage.removeItem("bigmall_ai_chat_guest");
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("bigmall_ai_chat_user_")) {
+          localStorage.removeItem(key);
+        }
+      });
       setCurrentUser(null);
+      window.dispatchEvent(new Event("storage"));
       window.history.replaceState({}, "", window.location.pathname);
     }
+
+    window.addEventListener("storage", syncUser);
+    return () => window.removeEventListener("storage", syncUser);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("bigmall_ai_chat_history");
+    localStorage.removeItem("bigmall_ai_chat_guest");
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("bigmall_ai_chat_user_")) {
+        localStorage.removeItem(key);
+      }
+    });
     setCurrentUser(null);
+    window.dispatchEvent(new Event("storage"));
     alert("Signed Out Successfully");
-    navigate("/signin");
+    navigate("/");
+  };
+
+  const openCart = () => {
+    const token = localStorage.getItem("token");
+    if (!token || token === "null" || token === "undefined") {
+      alert("Please Login First to view your Cart");
+      navigate("/signin");
+      return;
+    }
+    window.location.href = `${DASHBOARD_URL}/mycard?token=${encodeURIComponent(token)}`;
+  };
+
+  const openOrders = () => {
+    const token = localStorage.getItem("token");
+    if (!token || token === "null" || token === "undefined") {
+      alert("Please Login First to view your Orders");
+      navigate("/signin");
+      return;
+    }
+    window.location.href = `${DASHBOARD_URL}/myorder?token=${encodeURIComponent(token)}`;
   };
 
   const checkLogin = () => {
@@ -191,7 +241,8 @@ function Navbar() {
                 <button
                   className="btn text-light me-2"
                   style={{ background: "radial-gradient(#FF8800 50%, #CC0000)" }}
-                  onClick={checkLogin}
+                  onClick={openCart}
+                  title={currentUser ? "View Cart" : "Sign In to view Cart"}
                 >
                   <i className="fa fa-cart-shopping " aria-hidden="true"></i>
                   Cart &nbsp;
@@ -203,6 +254,7 @@ function Navbar() {
                   className="me-2 fw-semibold"
                   onClick={checkLogin}
                   style={{ cursor: "pointer" }}
+                  title={currentUser ? "Open Profile & Dashboard" : "Sign In"}
                 >
                   {currentUser ? currentUser.name : "Guest / Sign In"}
                   <img
@@ -221,12 +273,14 @@ function Navbar() {
                     cursor: "pointer",
                   }}
                   onClick={checkLogin}
+                  title="My Profile"
                 ></i>
                 &nbsp; &nbsp; &nbsp;
                 <span
                   className="d-flex flex-column"
                   style={{ lineHeight: "1", cursor: "pointer" }}
-                  onClick={checkLogin}
+                  onClick={openOrders}
+                  title="My Orders"
                 >
                   <small>Cancel All</small>
                   <strong>Orders</strong>
