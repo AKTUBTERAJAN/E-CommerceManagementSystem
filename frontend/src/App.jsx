@@ -11,6 +11,7 @@ import Signin from './landing_page/signin/signin';
 import Footer from './landing_page/footer';
 import Privacy from './landing_page/privacy/privacy';
 import NotFound from './landing_page/notfound';
+import Chatbot from './landing_page/chatbot/chatbot';
 
 function ProfileRedirect() {
   useEffect(() => {
@@ -50,6 +51,7 @@ function Homepage() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
+      <Chatbot />
     </>
   );
 }

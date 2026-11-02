@@ -1,0 +1,341 @@
+import React, { useState, useRef, useEffect } from "react";
+import { sendChatMessage } from "../../api/ai";
+import "./chatbot.css";
+
+const QUICK_SUGGESTIONS = [
+  "Products under ₹100",
+  "Today's Deals",
+  "Chips",
+];
+
+const INITIAL_MESSAGE = {
+  id: "welcome-msg",
+  sender: "assistant",
+  text: "Hello! Welcome to BigMall. I am your AI Shopping Assistant. How can I help you today? You can ask me about products, prices, discounts, or deals!",
+  products: [],
+  time: formatTime(new Date()),
+};
+
+function formatTime(date) {
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
+function resolveImageUrl(pic) {
+  if (!pic || typeof pic !== "string") return "";
+  const trimmed = pic.trim();
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+  return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+}
+
+function Chatbot() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [inputMessage, setInputMessage] = useState("");
+  const [messages, setMessages] = useState([INITIAL_MESSAGE]);
+  const [loading, setLoading] = useState(false);
+
+  const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    if (isOpen && !isMinimized) {
+      scrollToBottom();
+    }
+  }, [messages, loading, isOpen, isMinimized]);
+
+  useEffect(() => {
+    if (isOpen && !isMinimized) {
+      inputRef.current?.focus();
+    }
+  }, [isOpen, isMinimized]);
+
+  const handleToggleOpen = () => {
+    if (!isOpen) {
+      setIsOpen(true);
+      setIsMinimized(false);
+    } else {
+      setIsOpen(false);
+    }
+  };
+
+  const handleMinimize = (e) => {
+    e.stopPropagation();
+    setIsMinimized(!isMinimized);
+  };
+
+  const handleClose = (e) => {
+    e.stopPropagation();
+    setIsOpen(false);
+  };
+
+  const handleSend = async (messageText) => {
+    const text = (messageText || inputMessage || "").trim();
+    if (!text || loading) return;
+
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      sender: "user",
+      text,
+      time: formatTime(new Date()),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInputMessage("");
+    setLoading(true);
+
+    try {
+      const data = await sendChatMessage(text);
+
+      const assistantMessage = {
+        id: `assistant-${Date.now()}`,
+        sender: "assistant",
+        text: data.reply || "Here is what I found for you:",
+        products: Array.isArray(data.products) ? data.products : [],
+        time: formatTime(new Date()),
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (err) {
+      const errorMessage = {
+        id: `error-${Date.now()}`,
+        sender: "assistant",
+        text: "Sorry, I am unable to connect to the BigMall shopping service right now. Please check back in a moment.",
+        isError: true,
+        products: [],
+        time: formatTime(new Date()),
+      };
+
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  return (
+    <>
+      {/* Floating Launcher Button */}
+      {!isOpen && (
+        <button
+          className="bigmall-ai-launcher"
+          onClick={handleToggleOpen}
+          aria-label="Open BigMall AI Shopping Assistant"
+          title="Chat with BigMall AI"
+        >
+          <i className="fa fa-comments" aria-hidden="true"></i>
+          <span className="bigmall-ai-launcher-badge">AI</span>
+        </button>
+      )}
+
+      {/* Floating Chat Window */}
+      {isOpen && (
+        <div
+          className={`bigmall-ai-window ${
+            isMinimized ? "bigmall-ai-minimized" : ""
+          }`}
+          role="dialog"
+          aria-label="BigMall Shopping Assistant Window"
+        >
+          {/* Header */}
+          <div
+            className="bigmall-ai-header"
+            onClick={() => isMinimized && setIsMinimized(false)}
+          >
+            <div className="bigmall-ai-header-left">
+              <div className="bigmall-ai-avatar">
+                <i className="fa fa-shopping-bag" aria-hidden="true"></i>
+              </div>
+              <div className="bigmall-ai-header-info">
+                <span className="bigmall-ai-header-title">
+                  BigMall Shopping AI
+                </span>
+                <span className="bigmall-ai-header-status">
+                  <span className="bigmall-ai-status-dot"></span> Online
+                </span>
+              </div>
+            </div>
+
+            <div className="bigmall-ai-header-controls">
+              <button
+                className="bigmall-ai-control-btn"
+                onClick={handleMinimize}
+                title={isMinimized ? "Restore" : "Minimize"}
+                aria-label={isMinimized ? "Restore Chat" : "Minimize Chat"}
+              >
+                <i
+                  className={`fa ${isMinimized ? "fa-window-maximize" : "fa-minus"}`}
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <button
+                className="bigmall-ai-control-btn"
+                onClick={handleClose}
+                title="Close"
+                aria-label="Close Chat"
+              >
+                <i className="fa fa-times" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          {/* Body and Inputs (only if not minimized) */}
+          {!isMinimized && (
+            <>
+              {/* Message Thread */}
+              <div className="bigmall-ai-body">
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`bigmall-ai-msg ${
+                      msg.sender === "user"
+                        ? "bigmall-ai-msg-user"
+                        : "bigmall-ai-msg-assistant"
+                    }`}
+                  >
+                    {msg.isError ? (
+                      <div className="bigmall-ai-error-box">
+                        <i className="fa fa-exclamation-circle" aria-hidden="true"></i>
+                        <span>{msg.text}</span>
+                      </div>
+                    ) : (
+                      <p className="bigmall-ai-msg-text">{msg.text}</p>
+                    )}
+
+                    {/* Grounded Product Cards */}
+                    {msg.products && msg.products.length > 0 && (
+                      <div className="bigmall-ai-products-grid">
+                        {msg.products.map((prod) => (
+                          <div
+                            key={prod._id || prod.sid || Math.random()}
+                            className="bigmall-ai-product-card"
+                          >
+                            {prod.product_pic ? (
+                              <img
+                                src={resolveImageUrl(prod.product_pic)}
+                                alt={prod.subcategory_name || "Product"}
+                                className="bigmall-ai-product-img"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = "none";
+                                }}
+                              />
+                            ) : (
+                              <div className="bigmall-ai-product-img-fallback">
+                                <i className="fa fa-shopping-bag" aria-hidden="true"></i>
+                              </div>
+                            )}
+
+                            <div className="bigmall-ai-product-info">
+                              <span
+                                className="bigmall-ai-product-name"
+                                title={prod.subcategory_name}
+                              >
+                                {prod.subcategory_name}
+                              </span>
+
+                              {prod.product_quantity && (
+                                <span className="bigmall-ai-product-qty">
+                                  {prod.product_quantity}
+                                </span>
+                              )}
+
+                              <div className="bigmall-ai-product-price-row">
+                                <span className="bigmall-ai-product-selling">
+                                  ₹{prod.discount_price ?? prod.price}/-
+                                </span>
+
+                                {prod.price !== undefined &&
+                                  prod.price !== prod.discount_price && (
+                                    <span className="bigmall-ai-product-mrp">
+                                      ₹{prod.price}/-
+                                    </span>
+                                  )}
+
+                                {Boolean(prod.total_discount) && (
+                                  <span className="bigmall-ai-product-discount">
+                                    {prod.total_discount}% off
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <span className="bigmall-ai-msg-time">{msg.time}</span>
+                  </div>
+                ))}
+
+                {/* Loading / Typing indicator */}
+                {loading && (
+                  <div className="bigmall-ai-typing">
+                    <span className="bigmall-ai-typing-dot"></span>
+                    <span className="bigmall-ai-typing-dot"></span>
+                    <span className="bigmall-ai-typing-dot"></span>
+                  </div>
+                )}
+
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Quick Suggestions */}
+              <div className="bigmall-ai-quick-container">
+                {QUICK_SUGGESTIONS.map((suggestion, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className="bigmall-ai-quick-btn"
+                    onClick={() => handleSend(suggestion)}
+                    disabled={loading}
+                  >
+                    <i className="fa fa-bolt" aria-hidden="true"></i>
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+
+              {/* Input Area */}
+              <div className="bigmall-ai-input-area">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  className="bigmall-ai-input"
+                  placeholder="Ask BigMall AI shopping assistant..."
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  disabled={loading}
+                  maxLength={500}
+                />
+                <button
+                  type="button"
+                  className="bigmall-ai-send-btn"
+                  onClick={() => handleSend()}
+                  disabled={loading || !inputMessage.trim()}
+                  title="Send message"
+                  aria-label="Send message"
+                >
+                  <i className="fa fa-paper-plane" aria-hidden="true"></i>
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </>
+  );
+}
+
+export default Chatbot;
