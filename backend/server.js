@@ -16,6 +16,7 @@ const orderRoutes = require("./routes/orderRoutes");
 const walletRoutes = require("./routes/walletRoutes");
 const watchlistRoutes = require("./routes/watchlistRoutes");
 const addressRoutes = require("./routes/addressRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/watchlist", watchlistRoutes);
 app.use("/api/address", addressRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
