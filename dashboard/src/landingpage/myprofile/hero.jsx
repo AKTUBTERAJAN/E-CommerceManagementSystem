@@ -38,13 +38,12 @@ useEffect(() => {
 
       if (token) {
         localStorage.setItem("token", token);
+      }
 
-        // URL clean
-        window.history.replaceState(
-          {},
-          "",
-          `${DASHBOARD_URL}/myprofile`
-        );
+      // URL clean
+      const cleanPath = (window.location.pathname || "/").replace(/\/+/g, "/");
+      if (token || window.location.pathname !== cleanPath) {
+        window.history.replaceState({}, "", cleanPath);
       }
 
       const userData = await getCurrentUser();
@@ -54,7 +53,13 @@ useEffect(() => {
       localStorage.setItem("user", JSON.stringify(userData));
 
     } catch (error) {
-      alert(error.message || "Profile load failed");
+      console.error("Profile load failed:", error);
+      const savedUser = localStorage.getItem("user");
+      if (savedUser) {
+        try {
+          setUserState(JSON.parse(savedUser));
+        } catch (e) {}
+      }
     } finally {
       setLoading(false);
     }

@@ -17,14 +17,24 @@ function Hero() {
 
   const loadData = async () => {
     try {
-      const productRes = await getProducts();
-      const subcatRes = await getSubcategories();
+      const [productResult, subcatResult] = await Promise.allSettled([
+        getProducts(),
+        getSubcategories(),
+      ]);
 
-      console.log("Products:", productRes.data);
-      console.log("Subcategories:", subcatRes.data);
+      if (productResult.status === "fulfilled") {
+        console.log("Products:", productResult.value.data);
+        setProducts(productResult.value.data || []);
+      } else {
+        console.error("Products load error:", productResult.reason);
+      }
 
-      setProducts(productRes.data || []);
-      setSubcat(subcatRes.data || []);
+      if (subcatResult.status === "fulfilled") {
+        console.log("Subcategories:", subcatResult.value.data);
+        setSubcat(subcatResult.value.data || []);
+      } else {
+        console.error("Subcategories load error:", subcatResult.reason);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -35,28 +45,28 @@ function Hero() {
     : products;
 
   return (
-   <>
-    <div className="row p-4">
-      <div className="col-sm-2">
-        <ProductSidebar subcat={subcat} />
-      </div>
+    <>
+      <div className="row p-4">
+        <div className="col-sm-2">
+          <ProductSidebar subcat={subcat} />
+        </div>
 
-      <div className="col-sm-10">
-        <div className="row">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((item) => (
-              <ProductCard
-                key={item._id}
-                product={item}
-              />
-            ))
-          ) : (
-            <h4 className="text-center mt-5">No Products Found</h4>
-          )}
+        <div className="col-sm-10">
+          <div className="row">
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((item) => (
+                <ProductCard
+                  key={item._id}
+                  product={item}
+                />
+              ))
+            ) : (
+              <h4 className="text-center mt-5">No Products Found</h4>
+            )}
+          </div>
         </div>
       </div>
-    </div>
- </>
+    </>
   );
 }
 

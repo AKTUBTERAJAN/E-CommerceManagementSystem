@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 function LatestProducts({ pdata = [] }) {
   const [qty, setQty] = useState({});
   const navigate = useNavigate();
-  
 
   const increase = (id) => {
     setQty((prev) => ({
@@ -22,108 +21,108 @@ function LatestProducts({ pdata = [] }) {
     }
   };
 
-const addToCart = (product) => {
+  const addToCart = (product) => {
+    const user = localStorage.getItem("user");
+    console.log("User =", user);
 
-  const user = localStorage.removeItem("user");
-  console.log("User =", user);
+    if (!user || user === "null" || user === "undefined") {
+      alert("Please Login First");
+      navigate("/signin");
+      return;
+    }
 
-  if (!user || user === "null" || user === "undefined") {
-    alert("Please Login First");
-    navigate("/signin");
-    return;
-  }
+    const currentQty = qty[product._id || product.id] || 0;
+    if (currentQty === 0) {
+      alert("Please select quantity");
+      return;
+    }
 
-  
-};
+    alert(`${product.subcategory_name} Added to Cart\nQuantity : ${currentQty}`);
+  };
+
   return (
-   <>
-    <div className="row product fs-4 p-3">
+    <>
+      <div className="row product fs-4 p-3">
+        <div className="fs-3 mb-3">
+          Latest <b className="txt-mycolor">Product</b>
+        </div>
 
-      <div className="fs-3 mb-3">
-        Latest <b className="txt-mycolor">Product</b>
-      </div>
-
-      {pdata.map((item) => (
-        <div
-          className="col-lg-2 col-md-3 col-sm-6 mb-3"
-          key={item._id || item.id}
-        >
+        {pdata.map((item) => (
           <div
-            className="card p-3 mt-2"
-            style={{
-              borderRadius: "12px",
-            }}
+            className="col-lg-2 col-md-3 col-sm-6 mb-3"
+            key={item._id || item.id}
           >
-            <img
-              src={item.product_pic}
-              alt={item.subcategory_name}
-              className="card-img-top"
-              style={{
-               
-                objectFit: "contain",
-              }}
-            />
-
             <div
-              className="card-body border rounded mt-2"
-              style={{ padding: "5px" }}
+              className="card p-3 mt-2"
+              style={{
+                borderRadius: "12px",
+              }}
             >
-              <b>{item.subcategory_name}</b>
+              <img
+                src={item.product_pic}
+                alt={item.subcategory_name}
+                className="card-img-top"
+                style={{
+                  objectFit: "contain",
+                }}
+              />
 
-              <br />
-
-              {item.product_quantity}
-
-              <br />
-
-              <i className="fa-solid fa-indian-rupee-sign"></i>
-
-              <s>{item.price}/-</s>
-
-              <b className="ms-2">
-                {item.discount_price}/-
-              </b>
-
-              <div className="input-group mt-2">
-
-                <button
-                  className="input-group-text"
-                  onClick={() => decrease(item._id || item.id)}
-                >
-                   <i class="fa fa-minus" aria-hidden="true"></i>
-                </button>
-
-                <input
-                  type="text"
-                  className="form-control text-center fs-5"
-                  value={qty[item._id || item.id] || 0}
-                  readOnly
-                />
-
-                <button
-                  className="input-group-text"
-                  onClick={() => increase(item._id || item.id)}
-                >
-                 <i className="fa fa-plus" aria-hidden="true"></i>
-                </button>
-
-              </div>
-
-              <button
-                className="btn bg-mycolor text-light mt-2"
-                style={{ width: "60px" }}
-                onClick={() => {addToCart(item)}}
+              <div
+                className="card-body border rounded mt-2"
+                style={{ padding: "5px" }}
               >
-                Add
-              </button>
+                <b>{item.subcategory_name}</b>
 
+                <br />
+
+                {item.product_quantity}
+
+                <br />
+
+                <i className="fa-solid fa-indian-rupee-sign"></i>
+
+                <s>{item.price}/-</s>
+
+                <b className="ms-2">
+                  {item.discount_price}/-
+                </b>
+
+                <div className="input-group mt-2">
+                  <button
+                    className="input-group-text"
+                    onClick={() => decrease(item._id || item.id)}
+                  >
+                    <i className="fa fa-minus" aria-hidden="true"></i>
+                  </button>
+
+                  <input
+                    type="text"
+                    className="form-control text-center fs-5"
+                    value={qty[item._id || item.id] || 0}
+                    readOnly
+                  />
+
+                  <button
+                    className="input-group-text"
+                    onClick={() => increase(item._id || item.id)}
+                  >
+                    <i className="fa fa-plus" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+                <button
+                  className="btn bg-mycolor text-light mt-2"
+                  style={{ width: "60px" }}
+                  onClick={() => { addToCart(item); }}
+                >
+                  Add
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-
-    </div>
- </>
+        ))}
+      </div>
+    </>
   );
 }
 

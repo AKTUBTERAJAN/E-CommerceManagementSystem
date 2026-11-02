@@ -29,8 +29,8 @@ function Hero() {
     try {
       setLoading(true);
       const userData = new FormData();
-      userData.append("name", formData.name);
-      userData.append("email", formData.email);
+      userData.append("name", formData.name.trim());
+      userData.append("email", formData.email.trim());
       userData.append("mobile", formData.mobile);
       userData.append("password", formData.password);
       userData.append("address", formData.address);
@@ -42,7 +42,11 @@ function Hero() {
       alert(data.message || "Registration successful");
       navigate("/signin");
     } catch (error) {
-      alert(error.response?.data?.message || "Registration failed");
+      alert(
+        error.response?.data?.message ||
+        error.message ||
+        "Registration failed"
+      );
     } finally {
       setLoading(false);
     }
@@ -50,7 +54,7 @@ function Hero() {
 
   return (
     <>
-        <style>
+      <style>
         {`
           .form-control{
             height:45px;

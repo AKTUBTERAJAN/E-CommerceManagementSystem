@@ -3,7 +3,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import { WatchListProvider } from "./landingpage/watchlist/watchlistcontext";
@@ -19,13 +19,9 @@ root.render(
       <CartProvider>
         <WalletProvider>
           <OrderProvider>
-
             <BrowserRouter>
-              <Routes>
-                <Route path="/*" element={<App />} />
-              </Routes>
+              <App />
             </BrowserRouter>
-
           </OrderProvider>
         </WalletProvider>
       </CartProvider>

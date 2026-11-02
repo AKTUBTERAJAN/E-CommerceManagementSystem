@@ -18,12 +18,12 @@
     "multer": "^2.2.0"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "eslint": "^10.6.0",
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
     "globals": "^17.7.0",
     "nodemon": "^3.1.14"
   },
-  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "description": "Backend API for BigMall E-Commerce Management System",
   "keywords": [],
   "author": "",
   "license": "ISC",

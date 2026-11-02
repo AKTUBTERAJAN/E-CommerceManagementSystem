@@ -1,9 +1,23 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { loginUser } from "../../api/auth";
 
-const API_URL =import.meta.env.VITE_API_URL || "https://bigmall-backend.onrender.com";
-const DASHBOARD_URL =import.meta.env.VITE_DASHBOARD_URL || "https://bigmall-dashboard.vercel.app";
+const getDashboardUrl = () => {
+  const isLocal =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" ||
+     window.location.hostname === "127.0.0.1");
+
+  const envUrl = (import.meta.env.VITE_DASHBOARD_URL || "").trim().replace(/\/+$/, "");
+
+  if (isLocal) {
+    if (!envUrl || envUrl.includes("vercel.app") || envUrl.includes("onrender.com")) {
+      return "http://localhost:5174";
+    }
+    return envUrl;
+  }
+
+  return envUrl || "https://bigmall-dashboard.vercel.app";
+};
 
 function Hero() {
   const [formData, setFormData] = useState({
@@ -19,136 +33,129 @@ function Hero() {
     });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const { data } = await loginUser(
-      formData.email,
-      formData.password
-    );
+      const { data } = await loginUser(
+        formData.email.trim(),
+        formData.password
+      );
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-    alert(data.message || "Login Successful");
+      alert(data.message || "Login Successful");
 
-    window.location.href =
-      `${DASHBOARD_URL}/myprofile?token=${encodeURIComponent(data.token)}`;
+      const dashboardBase = getDashboardUrl();
+      window.location.href =
+        `${dashboardBase}/myprofile?token=${encodeURIComponent(data.token)}`;
 
-  } catch (error) {
-    alert(
-      error.response?.data?.message ||
-      error.message ||
-      "Login Failed"
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+    } catch (error) {
+      alert(
+        error.response?.data?.message ||
+        error.message ||
+        "Login Failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
-        <div className="container">
+      <div className="container">
+        <style>{`
+          .form-control{
+            height:45px;
+            margin-bottom:1%;
+          }
+        `}</style>
 
-      <style>{`
-        .form-control{
-          height:45px;
-          margin-bottom:1%;
-        }
-      `}</style>
-
-      <div className="text-center fs-2 mt-4">
-        <b className="txt-mycolor">
-          <u>Sign In</u>{" "}
-          <i className="fa fa-sign-in me-1" aria-hidden="true"></i>
-        </b>
-      </div>
-
-      <div className="row p-4">
-
-        <div
-          className="col-lg-5 col-md-7 col-sm-10 mx-auto"
-          style={{
-            padding: "60px",
-            borderRadius: "10px",
-            backgroundColor: "rgb(211,246,246)",
-            textAlign: "center",
-          }}
-        >
-          <form onSubmit={handleSubmit}>
-
-            <b style={{fontSize:"25px"}}>Welcome to Big Mall</b>
-
-            <h6 className="mb-4">
-              Login to Your Online Site
-            </h6>
-
-            <div className="input-group my-2">
-
-              <span
-                className="input-group-text bg-mycolor text-light"
-                style={{
-                  width: "50px",
-                  textAlign: "center",
-                  height: "45px",
-                }}
-              >
-                <i className="fa fa-user" aria-hidden="true"></i>
-              </span>
-
-              <input
-                type="email"
-                name="email"
-                placeholder="Username..."
-                className="form-control"
-                required
-                value={formData.email}
-                onChange={handleChange}
-              />
-
-            </div>
-
-            <div className="input-group my-2">
-
-              <span
-                className="input-group-text bg-mycolor text-light"
-                style={{
-                  width: "50px",
-                  textAlign: "center",
-                  height: "45px",
-                }}
-              >
-                <i className="fa fa-key " aria-hidden="true"></i>
-              </span>
-
-              <input
-                type="password"
-                name="password"
-                placeholder="Password..."
-                className="form-control"
-                required
-                value={formData.password}
-                onChange={handleChange}
-              />
-
-            </div>
-
-            <button
-              type="submit"
-              className="btn bg-mycolor mt-3 w-100"
-              style={{ borderRadius: "20px" }}
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
-
-          </form>
+        <div className="text-center fs-2 mt-4">
+          <b className="txt-mycolor">
+            <u>Sign In</u>{" "}
+            <i className="fa fa-sign-in me-1" aria-hidden="true"></i>
+          </b>
         </div>
 
-      </div>
+        <div className="row p-4">
+          <div
+            className="col-lg-5 col-md-7 col-sm-10 mx-auto"
+            style={{
+              padding: "60px",
+              borderRadius: "10px",
+              backgroundColor: "rgb(211,246,246)",
+              textAlign: "center",
+            }}
+          >
+            <form onSubmit={handleSubmit}>
+              <b style={{ fontSize: "25px" }}>Welcome to Big Mall</b>
 
-    </div>
+              <h6 className="mb-4">
+                Login to Your Online Site
+              </h6>
+
+              <div className="input-group my-2">
+                <span
+                  className="input-group-text bg-mycolor text-light"
+                  style={{
+                    width: "50px",
+                    textAlign: "center",
+                    height: "45px",
+                  }}
+                >
+                  <i className="fa fa-user" aria-hidden="true"></i>
+                </span>
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Username..."
+                  className="form-control"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="input-group my-2">
+                <span
+                  className="input-group-text bg-mycolor text-light"
+                  style={{
+                    width: "50px",
+                    textAlign: "center",
+                    height: "45px",
+                  }}
+                >
+                  <i className="fa fa-key " aria-hidden="true"></i>
+                </span>
+
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password..."
+                  className="form-control"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="btn bg-mycolor mt-3 w-100"
+                style={{ borderRadius: "20px" }}
+                disabled={loading}
+              >
+                {loading ? "Logging in..." : "Login"}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

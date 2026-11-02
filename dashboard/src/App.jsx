@@ -1,5 +1,5 @@
-import React, { useEffect,useState  } from "react";
-import{Route,Routes, useLocation, useNavigate} from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -8,59 +8,62 @@ import CancelledOrders from "./landingpage/myorder/CancelledOrders";
 import Foryou from "./landingpage/foryou/foryou";
 import Fresh from "./landingpage/fresh/fresh";
 import Mycard from "./landingpage/mycard/mycard";
-import Product from "./landingpage/product/product"
-import TodayDeals1 from "./landingpage/todaydeals/homepage"
-import Homepage1 from "./landingpage/home/homepage"
-import Custumersupport from "./landingpage/custumersupport/custumersupport"
-import MyProfile from "./landingpage/myprofile/myprofile"
-import Watchlist from "./landingpage/watchlist/watchlist"
-import Account from "./landingpage/YourAccount/Account"
+import Product from "./landingpage/product/product";
+import TodayDeals1 from "./landingpage/todaydeals/homepage";
+import Homepage1 from "./landingpage/home/homepage";
+import Custumersupport from "./landingpage/custumersupport/custumersupport";
+import MyProfile from "./landingpage/myprofile/myprofile";
+import Watchlist from "./landingpage/watchlist/watchlist";
+import Account from "./landingpage/YourAccount/Account";
 import Wallet from "./landingpage/wallet/wallet";
 import Payment from "./landingpage/wallet/payment";
 import OrderInformation from "./landingpage/myorder/OrderInformation";
 import MyOrder from "./landingpage/myorder/MyOrder";
 import OrderDetails from "./landingpage/myorder/OrderDetails";
 import TrackOrder from "./landingpage/myorder/trackorder";
-import NotFound from "./landingpage/notfound"
-import Footer from "./landingpage/footer"
-import Privacy from './landingpage/privacy/privacy';
-import Prime from './landingpage/prime/prime';
+import NotFound from "./landingpage/notfound";
+import Footer from "./landingpage/footer";
+import Privacy from "./landingpage/privacy/privacy";
+import Prime from "./landingpage/prime/prime";
 import YourAddress from "./landingpage/youraddress/youraddress";
 import Businessaccount from "./landingpage/businessaccount/businessaccount";
 import PaymentOptions from "./landingpage/Paymentoptions/paymentoption";
-
-
+import { FRONTEND_URL } from "./config";
 
 function Homepage() {
   const location = useLocation();
   const navigate = useNavigate();
   const [ready, setReady] = useState(false);
 
-useEffect(() => {
-  const init = async () => {
-    const params = new URLSearchParams(location.search);
-    const token = params.get("token");
+  useEffect(() => {
+    const init = async () => {
+      const params = new URLSearchParams(location.search);
+      const token = params.get("token");
 
-    if (token) {
-      localStorage.setItem("token", token);
+      if (token) {
+        localStorage.setItem("token", token);
+      }
 
-      // URL se token hata do
-      window.history.replaceState({}, "", location.pathname);
-    }
+      // Normalize pathname to remove double slashes (e.g. //myprofile -> /myprofile)
+      const cleanPath = (location.pathname || "/").replace(/\/+/g, "/");
+      if (token || location.pathname !== cleanPath) {
+        window.history.replaceState({}, "", cleanPath);
+      }
 
-    if (!localStorage.getItem("token")) {
-      window.location.href =
-        import.meta.env.VITE_FRONTEND_SIGNIN_URL ||
-        "http://localhost:5173/signin";
-      return;
-    }
+      if (!localStorage.getItem("token")) {
+        window.location.href =
+          import.meta.env.VITE_FRONTEND_SIGNIN_URL ||
+          `${FRONTEND_URL}/signin`;
+        return;
+      }
 
-    setReady(true);
-  };
+      setReady(true);
+    };
 
-  init();
-}, []);
- if (!ready) {
+    init();
+  }, [location.pathname, location.search]);
+
+  if (!ready) {
     return (
       <div
         style={{
@@ -75,39 +78,36 @@ useEffect(() => {
       </div>
     );
   }
+
   return (
     <>
-        <Navbar />
-        <Routes>
-           <Route path="/cancelledorders" element={<CancelledOrders />} />
-           <Route path="/mycart" element={<Mycard/>}/>
-           <Route path="/*" element={<Foryou/>}/>
-           <Route path="/fresh" element={<Fresh/>}/>
-           <Route path="/product" element={<Product/>}/>
-           <Route path="/todaydeals" element={<TodayDeals1/>}/>
-           <Route path="/home" element={<Homepage1/>}/>
-           <Route path="/customersupport" element={<Custumersupport/>}/>
-           <Route path="/myprofile" element={<MyProfile/>}/>
-           <Route path="/watchlist" element={<Watchlist/>}/>
-           <Route path="/youraccount" element={<Account/>}/>
-           <Route path="/wallet" element={<Wallet />} />
-           <Route path="/payment" element={<Payment />} />
-           <Route path="/orderinformation" element={<OrderInformation />}/>
-           <Route path="/myorder" element={<MyOrder />} />
-           <Route path="/orderdetails" element={<OrderDetails/>}/>
-           <Route path="/trackorder" element={<TrackOrder/>}/>
-           <Route path="*" element={<NotFound/>}/>
-          <Route path="/privacy" element={<Privacy/>}/>
-          <Route path="/prime" element={<Prime/>}/>
-          <Route path="/youraddress" element={<YourAddress />} />
-          <Route path="/business" element={<Businessaccount />} />
-          <Route path="/paymentoptions" element={<PaymentOptions />} />
-
-        </Routes>
-       
-        
-      
-        <Footer/>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Foryou />} />
+        <Route path="/cancelledorders" element={<CancelledOrders />} />
+        <Route path="/mycart" element={<Mycard />} />
+        <Route path="/fresh" element={<Fresh />} />
+        <Route path="/product" element={<Product />} />
+        <Route path="/todaydeals" element={<TodayDeals1 />} />
+        <Route path="/home" element={<Homepage1 />} />
+        <Route path="/customersupport" element={<Custumersupport />} />
+        <Route path="/myprofile" element={<MyProfile />} />
+        <Route path="/watchlist" element={<Watchlist />} />
+        <Route path="/youraccount" element={<Account />} />
+        <Route path="/wallet" element={<Wallet />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/orderinformation" element={<OrderInformation />} />
+        <Route path="/myorder" element={<MyOrder />} />
+        <Route path="/orderdetails" element={<OrderDetails />} />
+        <Route path="/trackorder" element={<TrackOrder />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/prime" element={<Prime />} />
+        <Route path="/youraddress" element={<YourAddress />} />
+        <Route path="/business" element={<Businessaccount />} />
+        <Route path="/paymentoptions" element={<PaymentOptions />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Footer />
     </>
   );
 }
