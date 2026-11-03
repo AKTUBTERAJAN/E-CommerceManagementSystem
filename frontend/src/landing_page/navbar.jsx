@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import SearchBar from "./search/SearchBar";
 
 const getDashboardUrl = () => {
   const isLocal =
@@ -125,14 +126,22 @@ function Navbar() {
             transition: "0.4s ease",
           }}
         >
-          <div className="py-1.2">
-            <div className="row ">
-              <div className="col-1"></div>
-              <div className="col-lg-5 text-center text-md-start mb-3 mb-md-0 ">
-                <img src="media/BigMall.png" style={{ height: "60px" }} alt="BigMall" />
+          <div className="py-2 px-3">
+            <div className="row align-items-center">
+              {/* BigMall Logo */}
+              <div className="col-lg-3 col-md-3 col-12 text-center text-md-start mb-2 mb-md-0">
+                <Link to="/">
+                  <img src="/media/BigMall.png" style={{ height: "55px", objectFit: "contain" }} alt="BigMall" />
+                </Link>
               </div>
 
-              <div className="col-lg-4 d-flex align-items-center justify-content-end ms-auto me-4">
+              {/* AI Smart Search */}
+              <div className="col-lg-5 col-md-5 col-12 mb-2 mb-md-0">
+                <SearchBar />
+              </div>
+
+              {/* Cart / User / Profile / Orders */}
+              <div className="col-lg-4 col-md-4 col-12 d-flex align-items-center justify-content-center justify-content-md-end flex-wrap gap-2">
                 <button
                   className="btn text-light me-2"
                   style={{ background: "radial-gradient(#FF8800 50%, #CC0000)" }}
@@ -151,7 +160,7 @@ function Navbar() {
                 >
                   Default User
                   <img
-                    src="media/user.png"
+                    src="/media/user.png"
                     alt="User"
                     className="img-thumbnail ms-2"
                     style={{ height: "40px" }}

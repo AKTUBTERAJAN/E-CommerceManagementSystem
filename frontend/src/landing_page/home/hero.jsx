@@ -3,6 +3,7 @@ import LeftProducts from "./leftproduct";
 import Slider from "./slider";
 import Category from "./category";
 import TodayDeals from "./todaydeals";
+import RecommendedProducts from "./recommendedproducts";
 import LatestProducts from "./latestproduct";
 import { getCategories } from "../../api/category";
 import { getProducts } from "../../api/products";
@@ -109,6 +110,7 @@ function Home() {
         </div>
         <Category cdata={categories} />
         <TodayDeals deals={todayDeals} />
+        <RecommendedProducts />
         <LatestProducts pdata={latestItems} />
       </div>
     </>

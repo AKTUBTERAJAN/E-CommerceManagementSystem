@@ -1,18 +1,33 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { sendChatMessage } from "../../api/ai";
 import "./chatbot.css";
 
 const QUICK_SUGGESTIONS = [
-  "Products under ₹100",
+  "Track My Order",
+  "Store Address",
+  "Cancellation Policy",
+  "Return Policy",
   "Today's Deals",
-  "Chips",
+  "Chips under ₹100",
 ];
+
+const ORDER_STATUS_LABELS = {
+  0: "Order Confirmed",
+  1: "Processing",
+  2: "Packed",
+  3: "Shipped",
+  4: "Out For Delivery",
+  5: "Delivered",
+};
 
 const INITIAL_MESSAGE = {
   id: "welcome-msg",
   sender: "assistant",
-  text: "Hello! Welcome to BigMall. I am your AI Shopping Assistant. How can I help you today? You can ask me about products, prices, discounts, or deals!",
+  text: "Hello! Welcome to BigMall. I am your AI Shopping & Customer Support Assistant. How can I help you today? You can ask me about products, deals, store address, contact details, order tracking, cancellation, or return policies!",
   products: [],
+  supportType: null,
+  orderData: null,
   time: formatTime(new Date()),
 };
 
@@ -27,6 +42,24 @@ function resolveImageUrl(pic) {
     return trimmed;
   }
   return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+}
+
+function getStatusBadgeClass(status) {
+  if (!status) return "bigmall-ai-status-default";
+  const s = status.toLowerCase();
+  if (s.includes("delivered")) return "bigmall-ai-status-delivered";
+  if (s.includes("cancel")) return "bigmall-ai-status-cancelled";
+  if (s.includes("out for delivery") || s.includes("shipped")) {
+    return "bigmall-ai-status-transit";
+  }
+  if (
+    s.includes("packed") ||
+    s.includes("processing") ||
+    s.includes("confirmed")
+  ) {
+    return "bigmall-ai-status-processing";
+  }
+  return "bigmall-ai-status-default";
 }
 
 function Chatbot() {
@@ -97,6 +130,8 @@ function Chatbot() {
         sender: "assistant",
         text: data.reply || "Here is what I found for you:",
         products: Array.isArray(data.products) ? data.products : [],
+        supportType: data.supportType || null,
+        orderData: data.orderData || null,
         time: formatTime(new Date()),
       };
 
@@ -105,9 +140,11 @@ function Chatbot() {
       const errorMessage = {
         id: `error-${Date.now()}`,
         sender: "assistant",
-        text: "Sorry, I am unable to connect to the BigMall shopping service right now. Please check back in a moment.",
+        text: "Sorry, I am unable to connect to the BigMall assistant right now. Please check back in a moment or visit our Customer Support page.",
         isError: true,
         products: [],
+        supportType: null,
+        orderData: null,
         time: formatTime(new Date()),
       };
 
@@ -131,7 +168,7 @@ function Chatbot() {
         <button
           className="bigmall-ai-launcher"
           onClick={handleToggleOpen}
-          aria-label="Open BigMall AI Shopping Assistant"
+          aria-label="Open BigMall AI Assistant"
           title="Chat with BigMall AI"
         >
           <i className="fa fa-comments" aria-hidden="true"></i>
@@ -146,7 +183,7 @@ function Chatbot() {
             isMinimized ? "bigmall-ai-minimized" : ""
           }`}
           role="dialog"
-          aria-label="BigMall Shopping Assistant Window"
+          aria-label="BigMall Assistant Window"
         >
           {/* Header */}
           <div
@@ -159,10 +196,10 @@ function Chatbot() {
               </div>
               <div className="bigmall-ai-header-info">
                 <span className="bigmall-ai-header-title">
-                  BigMall Shopping AI
+                  BigMall AI Assistant
                 </span>
                 <span className="bigmall-ai-header-status">
-                  <span className="bigmall-ai-status-dot"></span> Online
+                  <span className="bigmall-ai-status-dot"></span> Support & Shopping
                 </span>
               </div>
             </div>
@@ -206,11 +243,174 @@ function Chatbot() {
                   >
                     {msg.isError ? (
                       <div className="bigmall-ai-error-box">
-                        <i className="fa fa-exclamation-circle" aria-hidden="true"></i>
+                        <i
+                          className="fa fa-exclamation-circle"
+                          aria-hidden="true"
+                        ></i>
                         <span>{msg.text}</span>
                       </div>
                     ) : (
                       <p className="bigmall-ai-msg-text">{msg.text}</p>
+                    )}
+
+                    {/* Safe Authenticated Order Card */}
+                    {msg.orderData && (
+                      <div className="bigmall-ai-order-card">
+                        <div className="bigmall-ai-order-header">
+                          <div className="bigmall-ai-order-id-group">
+                            <i
+                              className="fa fa-shopping-bag bigmall-ai-order-icon"
+                              aria-hidden="true"
+                            ></i>
+                            <span
+                              className="bigmall-ai-order-id"
+                              title={`Order #${msg.orderData.orderId}`}
+                            >
+                              Order #{msg.orderData.orderId}
+                            </span>
+                          </div>
+                          <span
+                            className={`bigmall-ai-order-status-badge ${getStatusBadgeClass(
+                              msg.orderData.status
+                            )}`}
+                          >
+                            {msg.orderData.status || "Confirmed"}
+                          </span>
+                        </div>
+
+                        <div className="bigmall-ai-order-details">
+                          {msg.orderData.product_pic ? (
+                            <img
+                              src={resolveImageUrl(msg.orderData.product_pic)}
+                              alt={msg.orderData.subcategory_name || "Order Item"}
+                              className="bigmall-ai-order-thumb"
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                              }}
+                            />
+                          ) : (
+                            <div className="bigmall-ai-order-thumb-fallback">
+                              <i className="fa fa-cube" aria-hidden="true"></i>
+                            </div>
+                          )}
+
+                          <div className="bigmall-ai-order-info">
+                            <span className="bigmall-ai-order-item-name">
+                              {msg.orderData.subcategory_name}
+                            </span>
+                            <div className="bigmall-ai-order-item-meta">
+                              {msg.orderData.quantity && (
+                                <span>Qty: {msg.orderData.quantity}</span>
+                              )}
+                              {msg.orderData.product_quantity && (
+                                <span>({msg.orderData.product_quantity})</span>
+                              )}
+                              {msg.orderData.total_price !== undefined && (
+                                <span className="bigmall-ai-order-price">
+                                  • ₹{msg.orderData.total_price}
+                                </span>
+                              )}
+                            </div>
+                            {msg.orderData.added_date && (
+                              <span className="bigmall-ai-order-date">
+                                <i
+                                  className="fa fa-calendar-o"
+                                  aria-hidden="true"
+                                ></i>{" "}
+                                Ordered: {msg.orderData.added_date}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Milestone Progress Bar for Non-Cancelled Orders */}
+                        {msg.orderData.status !== "Cancelled" &&
+                          typeof msg.orderData.statusStep === "number" && (
+                            <div className="bigmall-ai-order-progress-box">
+                              <div className="bigmall-ai-order-progress-labels">
+                                <span className="bigmall-ai-order-step-text">
+                                  Step {msg.orderData.statusStep} of 5:{" "}
+                                  {ORDER_STATUS_LABELS[
+                                    msg.orderData.statusStep
+                                  ] || msg.orderData.status}
+                                </span>
+                                <span className="bigmall-ai-order-step-percent">
+                                  {Math.round(
+                                    (Math.max(
+                                      0,
+                                      Math.min(5, msg.orderData.statusStep)
+                                    ) /
+                                      5) *
+                                      100
+                                  )}
+                                  %
+                                </span>
+                              </div>
+                              <div className="bigmall-ai-order-progress-track">
+                                <div
+                                  className={`bigmall-ai-order-progress-bar ${
+                                    msg.orderData.statusStep === 5
+                                      ? "bigmall-ai-progress-done"
+                                      : ""
+                                  }`}
+                                  style={{
+                                    width: `${
+                                      (Math.max(
+                                        0,
+                                        Math.min(5, msg.orderData.statusStep)
+                                      ) /
+                                        5) *
+                                      100
+                                    }%`,
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+                          )}
+
+                        {/* Optional Delivery Notes if present */}
+                        {msg.orderData.deliveryNotes && (
+                          <div className="bigmall-ai-order-notes">
+                            <i
+                              className="fa fa-info-circle"
+                              aria-hidden="true"
+                            ></i>
+                            <span>{msg.orderData.deliveryNotes}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Guest Login-Required Action Link */}
+                    {msg.supportType === "auth_required" && (
+                      <div className="bigmall-ai-action-container">
+                        <Link
+                          to="/signin"
+                          className="bigmall-ai-action-btn"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <i className="fa fa-sign-in" aria-hidden="true"></i>
+                          Sign In to Track Order
+                        </Link>
+                      </div>
+                    )}
+
+                    {/* Quick Link to Customer Support Page */}
+                    {(msg.supportType === "store_info" ||
+                      msg.supportType === "return_policy") && (
+                      <div className="bigmall-ai-action-container">
+                        <Link
+                          to="/customersupport"
+                          className="bigmall-ai-action-btn bigmall-ai-action-btn-secondary"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <i
+                            className="fa fa-headphones"
+                            aria-hidden="true"
+                          ></i>
+                          Contact Support Page
+                        </Link>
+                      </div>
                     )}
 
                     {/* Grounded Product Cards */}
@@ -232,7 +432,10 @@ function Chatbot() {
                               />
                             ) : (
                               <div className="bigmall-ai-product-img-fallback">
-                                <i className="fa fa-shopping-bag" aria-hidden="true"></i>
+                                <i
+                                  className="fa fa-shopping-bag"
+                                  aria-hidden="true"
+                                ></i>
                               </div>
                             )}
 
@@ -312,7 +515,7 @@ function Chatbot() {
                   ref={inputRef}
                   type="text"
                   className="bigmall-ai-input"
-                  placeholder="Ask BigMall AI shopping assistant..."
+                  placeholder="Ask about orders, products, policies..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyDown={handleKeyDown}

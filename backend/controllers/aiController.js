@@ -1,6 +1,9 @@
+const mongoose = require("mongoose");
 const Product = require("../models/Products");
 const { getClient, isConfigured, GEMINI_MODEL } = require("../services/aiService");
 const { searchProducts } = require("../services/productSearchService");
+const { getProductRecommendations } = require("../services/productRecommendationService");
+const { handleCustomerSupportInquiry } = require("../services/customerSupportService");
 
 /**
  * Format retrieved products into a compact text summary for Gemini system prompt
@@ -52,8 +55,8 @@ function formatProductResponse(p) {
 
 /**
  * @route   POST /api/ai/chat
- * @desc    Answer customer shopping questions using MongoDB products and Google Gemini
- * @access  Public
+ * @desc    Answer customer shopping and support questions using MongoDB, policies, and Google Gemini
+ * @access  Public (Optional JWT authentication for personalized order support)
  */
 const chatWithAi = async (req, res) => {
   try {
@@ -85,7 +88,25 @@ const chatWithAi = async (req, res) => {
       });
     }
 
-    // 4. Verify AI service is configured
+    // 4. Handle Customer Support & Order Inquiries deterministically
+    // Authenticated user ID is obtained exclusively from verified JWT (req.user.id)
+    const userId = req.user?.id || null;
+    const supportResult = await handleCustomerSupportInquiry({
+      message: trimmedMessage,
+      userId,
+    });
+
+    if (supportResult) {
+      return res.status(200).json({
+        success: true,
+        reply: supportResult.reply,
+        products: [],
+        supportType: supportResult.type,
+        orderData: supportResult.orderData || null,
+      });
+    }
+
+    // 5. If not a customer support inquiry, verify AI service is configured for product shopping
     if (!isConfigured()) {
       return res.status(503).json({
         success: false,
@@ -93,7 +114,7 @@ const chatWithAi = async (req, res) => {
       });
     }
 
-    // 5. Search MongoDB for relevant products
+    // 6. Search MongoDB for relevant products
     let products = [];
     try {
       products = await searchProducts(trimmedMessage, 10);
@@ -104,7 +125,7 @@ const chatWithAi = async (req, res) => {
       });
     }
 
-    // 6. Build prompt following AI RESPONSE RULES
+    // 7. Build prompt following AI RESPONSE RULES
     const productDataString = formatProductsForPrompt(products);
     const systemPrompt = `You are the official Bigmall AI Shopping Assistant, a polite, helpful, and professional assistant for Bigmall e-commerce store.
 
@@ -120,7 +141,7 @@ RULES:
 SUPPLIED BIGMALL PRODUCT RECORDS:
 ${productDataString}`;
 
-    // 7. Invoke Google Gemini via OpenAI-compatible SDK
+    // 8. Invoke Google Gemini via OpenAI-compatible SDK
     let reply = "";
     try {
       const client = getClient();
@@ -156,7 +177,7 @@ ${productDataString}`;
       });
     }
 
-    // 8. Return response
+    // 9. Return response
     return res.status(200).json({
       success: true,
       reply,
@@ -318,9 +339,96 @@ Output strictly valid JSON only:
   }
 };
 
+/**
+ * @route   GET /api/ai/recommendations
+ * @desc    Get AI product recommendations based on real MongoDB products
+ * @access  Public
+ */
+const getRecommendations = async (req, res) => {
+  try {
+    const { sid, productId, type = "foryou", limit = 6 } = req.query;
+
+    // 1. Validate 'type' parameter
+    const validTypes = ["foryou", "complementary", "deals", "trending"];
+    if (typeof type !== "string" || !validTypes.includes(type.toLowerCase())) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid recommendation type. Allowed types: ${validTypes.join(", ")}.`,
+      });
+    }
+    const cleanType = type.toLowerCase();
+
+    // 2. Validate 'sid' if present
+    let cleanSid = null;
+    if (sid !== undefined && sid !== "") {
+      const parsedSid = Number(sid);
+      if (isNaN(parsedSid) || !Number.isInteger(parsedSid) || parsedSid < 0) {
+        return res.status(400).json({
+          success: false,
+          error: "Invalid sid parameter. Must be a valid positive integer.",
+        });
+      }
+      cleanSid = parsedSid;
+    }
+
+    // 3. Validate 'productId' if present
+    let cleanProductId = null;
+    if (productId !== undefined && productId !== "") {
+      if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(400).json({
+          success: false,
+          error: "Invalid productId parameter. Must be a valid 24-character hexadecimal ObjectId.",
+        });
+      }
+      cleanProductId = productId;
+    }
+
+    // 4. Validate and clamp 'limit' (1 - 12, default 6)
+    let cleanLimit = 6;
+    if (limit !== undefined && limit !== "") {
+      const parsedLimit = Number(limit);
+      if (isNaN(parsedLimit) || !Number.isInteger(parsedLimit)) {
+        return res.status(400).json({
+          success: false,
+          error: "Invalid limit parameter. Must be an integer between 1 and 12.",
+        });
+      }
+      cleanLimit = Math.max(1, Math.min(12, parsedLimit));
+    }
+
+    // 5. Retrieve recommendations from recommendation service
+    const result = await getProductRecommendations({
+      sid: cleanSid,
+      productId: cleanProductId,
+      type: cleanType,
+      limit: cleanLimit,
+    });
+
+    // 6. Format products using existing formatProductResponse and attach verified reason
+    const formattedProducts = (result.recommendations || []).map((p) => ({
+      ...formatProductResponse(p),
+      reason: p.reason || "Recommended item from BigMall catalog",
+    }));
+
+    return res.status(200).json({
+      success: true,
+      type: result.type,
+      count: formattedProducts.length,
+      recommendations: formattedProducts,
+      aiSummary: result.aiSummary,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: "An unexpected error occurred while generating recommendations.",
+    });
+  }
+};
+
 module.exports = {
   chatWithAi,
   searchWithAi,
+  getRecommendations,
   formatProductsForPrompt,
   formatProductResponse,
 };

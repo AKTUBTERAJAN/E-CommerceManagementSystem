@@ -1,0 +1,38 @@
+/* BigMall Dashboard AI Smart Search Results Styles */
+
+.bigmall-ai-search-results-header {
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.bigmall-ai-search-count-badge {
+  background: #fff3e0;
+  color: #d84315;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #ffe0b2;
+}
+
+.bigmall-ai-search-summary-alert {
+  background: #fdf8f4;
+  border-left: 4px solid #ff8800;
+  padding: 10px 16px;
+  border-radius: 6px;
+  color: #333333;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.bigmall-ai-search-status-box {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 40px 20px;
+  border: 1px dashed #e0e0e0;
+  margin-top: 15px;
+  margin-bottom: 25px;
+}

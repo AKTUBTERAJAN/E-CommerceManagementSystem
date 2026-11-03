@@ -1,13 +1,33 @@
 import React, { useEffect, useState } from "react";
-import {Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
+import "./navbar.css";
 import { useCart } from "./mycard/cardconext";
 import { getFileUrl } from "../api/api";
 import { getCurrentUser } from "../api/user";
-import { useNavigate } from "react-router-dom";
+// (useNavigate imported above)
 import { FRONTEND_URL } from "../config";
 
 function Navbar() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const urlQ = searchParams.get("q") || "";
+  const [searchQuery, setSearchQuery] = useState(urlQ);
+
+  // Sync search input when URL parameter changes
+  useEffect(() => {
+    setSearchQuery(urlQ);
+  }, [urlQ]);
+
+  const handleSearchSubmit = (e) => {
+    if (e) e.preventDefault();
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+    navigate(`/product?q=${encodeURIComponent(trimmed)}`);
+  };
+
+  const handleSearchClear = () => {
+    setSearchQuery("");
+  };
   const [user, setUser] = useState(() => {
   const saved = localStorage.getItem("user");
   return saved ? JSON.parse(saved) : null;
@@ -128,14 +148,60 @@ function Navbar() {
       : "#ffffff",
     transition: "0.4s ease"
   }}>
-      <div className=" py-1.2">
-        <div className="row ">
-          <div className="col-1"></div>
-          <div className="col-lg-5 text-center text-md-start mb-3 mb-md-0 ">
-            <img src="media/BigMall.png" style={{height:"60px"}}/>
+      <div className="py-2 px-3">
+        <div className="row align-items-center">
+
+          {/* BigMall Logo */}
+          <div className="col-lg-3 col-md-3 col-12 text-center text-md-start mb-2 mb-md-0">
+            <Link to="/">
+              <img src="media/BigMall.png" alt="BigMall" style={{ height: "60px", objectFit: "contain" }} />
+            </Link>
           </div>
 
-          <div className="col-lg-4 d-flex align-items-center justify-content-end ms-auto me-4">
+          {/* AI Smart Search */}
+          <div className="col-lg-5 col-md-5 col-12 mb-2 mb-md-0">
+            <div className="bigmall-ai-search-container">
+              <form onSubmit={handleSearchSubmit} className="bigmall-ai-search-form" role="search">
+                <div className="bigmall-ai-search-wrapper">
+                  <i className="fa fa-search bigmall-ai-search-icon" aria-hidden="true"></i>
+
+                  <input
+                    type="text"
+                    className="bigmall-ai-search-input"
+                    placeholder="Search products with AI..."
+                    aria-label="Search products with AI"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+
+                  {searchQuery.trim().length > 0 && (
+                    <button
+                      type="button"
+                      className="bigmall-ai-search-clear-btn"
+                      onClick={handleSearchClear}
+                      aria-label="Clear search input"
+                      title="Clear"
+                    >
+                      <i className="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="bigmall-ai-search-submit-btn"
+                    aria-label="Submit search"
+                    title="Search"
+                  >
+                    <i className="fa fa-search" aria-hidden="true"></i>
+                    <span className="bigmall-ai-search-btn-label">Search</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          {/* Cart, User Profile, and Cancel Orders */}
+          <div className="col-lg-4 col-md-4 col-12 d-flex align-items-center justify-content-center justify-content-md-end flex-wrap gap-2">
           <Link to="/mycart">
             <button className="btn text-light me-2" style={{ background: "radial-gradient(#FF8800 50%, #CC0000)" }}> 
               <i className="fa fa-cart-shopping " aria-hidden="true"></i>

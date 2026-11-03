@@ -28,6 +28,7 @@ import Prime from "./landingpage/prime/prime";
 import YourAddress from "./landingpage/youraddress/youraddress";
 import Businessaccount from "./landingpage/businessaccount/businessaccount";
 import PaymentOptions from "./landingpage/Paymentoptions/paymentoption";
+import Chatbot from "./landingpage/chatbot/chatbot";
 import { FRONTEND_URL } from "./config";
 
 function Homepage() {
@@ -108,6 +109,7 @@ function Homepage() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
+      <Chatbot />
     </>
   );
 }

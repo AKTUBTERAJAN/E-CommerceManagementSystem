@@ -1,0 +1,807 @@
+/* ==========================================================================
+   BigMall Dashboard AI Chatbot Component Styles
+   Scoped exclusively under .bigmall-ai-* namespace to prevent global bleed
+   ========================================================================== */
+
+/* Floating Launcher Button */
+.bigmall-ai-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(60deg, #ffea00e6, #cc0000, #77cc00);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 16px rgba(204, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  font-size: 24px;
+}
+
+.bigmall-ai-launcher:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 22px rgba(204, 0, 0, 0.45);
+}
+
+.bigmall-ai-launcher:focus {
+  outline: none;
+}
+
+.bigmall-ai-launcher-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  background: #FF8800;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Chat Window Container */
+.bigmall-ai-window {
+  position: fixed;
+  bottom: 90px;
+  right: 24px;
+  width: 360px;
+  height: 520px;
+  max-height: calc(100vh - 120px);
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9999;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: height 0.25s ease, transform 0.25s ease, opacity 0.25s ease;
+  animation: bigmallAiFadeIn 0.25s ease-out;
+}
+
+.bigmall-ai-window.bigmall-ai-minimized {
+  height: 54px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Chat Header */
+.bigmall-ai-header {
+  background: linear-gradient(60deg, #ffea00e6, #cc0000, #77cc00);
+  color: #ffffff;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.bigmall-ai-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bigmall-ai-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: #CC0000;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.bigmall-ai-header-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.bigmall-ai-header-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.bigmall-ai-header-status {
+  font-size: 11px;
+  color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.bigmall-ai-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4cd964;
+  display: inline-block;
+}
+
+.bigmall-ai-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bigmall-ai-control-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.bigmall-ai-control-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
+}
+
+.bigmall-ai-control-btn:focus {
+  outline: none;
+}
+
+/* Chat Message Body */
+.bigmall-ai-body {
+  flex: 1;
+  overflow-y: auto;
+  background: #f8f9fa;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bigmall-ai-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.bigmall-ai-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bigmall-ai-body::-webkit-scrollbar-thumb {
+  background: #d6d8db;
+  border-radius: 4px;
+}
+
+/* Message Bubbles */
+.bigmall-ai-msg-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bigmall-ai-msg {
+  max-width: 88%;
+  font-size: 13.5px;
+  line-height: 1.45;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.bigmall-ai-msg-user {
+  align-self: flex-end;
+  background: radial-gradient(circle at top left, #FF8800 20%, #CC0000 100%);
+  color: #ffffff;
+  padding: 9px 13px;
+  border-radius: 14px 14px 3px 14px;
+  box-shadow: 0 2px 6px rgba(204, 0, 0, 0.2);
+}
+
+.bigmall-ai-msg-assistant {
+  align-self: flex-start;
+  background: #ffffff;
+  color: #212529;
+  padding: 10px 13px;
+  border-radius: 14px 14px 14px 3px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.bigmall-ai-msg-text {
+  white-space: pre-wrap;
+  margin: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.bigmall-ai-msg-time {
+  font-size: 10px;
+  margin-top: 3px;
+  display: block;
+}
+
+.bigmall-ai-msg-user .bigmall-ai-msg-time {
+  color: rgba(255, 255, 255, 0.75);
+  text-align: right;
+}
+
+.bigmall-ai-msg-assistant .bigmall-ai-msg-time {
+  color: #888888;
+}
+
+/* ==========================================================================
+   Order Tracking Card in Chat
+   ========================================================================== */
+.bigmall-ai-order-card {
+  margin-top: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bigmall-ai-order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.bigmall-ai-order-id-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.bigmall-ai-order-icon {
+  color: #CC0000;
+  font-size: 12px;
+}
+
+.bigmall-ai-order-id {
+  font-weight: 700;
+  font-size: 12.5px;
+  color: #1e293b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Order Status Badges */
+.bigmall-ai-order-status-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 2px 7px;
+  border-radius: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.bigmall-ai-status-delivered {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.bigmall-ai-status-cancelled {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.bigmall-ai-status-transit {
+  background: #fff3e0;
+  color: #e65100;
+  border: 1px solid #ffe0b2;
+}
+
+.bigmall-ai-status-processing {
+  background: #e1f5fe;
+  color: #0277bd;
+  border: 1px solid #b3e5fc;
+}
+
+.bigmall-ai-status-default {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+/* Order Item Details */
+.bigmall-ai-order-details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bigmall-ai-order-thumb {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  flex-shrink: 0;
+}
+
+.bigmall-ai-order-thumb-fallback {
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  background: #fff8f0;
+  color: #FF8800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.bigmall-ai-order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.bigmall-ai-order-item-name {
+  font-weight: 700;
+  font-size: 12.5px;
+  color: #212529;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bigmall-ai-order-item-meta {
+  font-size: 11px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.bigmall-ai-order-price {
+  font-weight: 700;
+  color: #CC0000;
+}
+
+.bigmall-ai-order-date {
+  font-size: 10.5px;
+  color: #888888;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 1px;
+}
+
+/* Order Milestone Stepper / Progress Track */
+.bigmall-ai-order-progress-box {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bigmall-ai-order-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10.5px;
+}
+
+.bigmall-ai-order-step-text {
+  font-weight: 600;
+  color: #334155;
+}
+
+.bigmall-ai-order-step-percent {
+  font-weight: 700;
+  color: #CC0000;
+}
+
+.bigmall-ai-order-progress-track {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bigmall-ai-order-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #ffea00, #ff8800, #28a745);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.bigmall-ai-order-progress-bar.bigmall-ai-progress-done {
+  background: #28a745;
+}
+
+.bigmall-ai-order-notes {
+  font-size: 10.5px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-style: italic;
+}
+
+/* Quick Action Buttons */
+.bigmall-ai-action-container {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bigmall-ai-action-btn {
+  background: linear-gradient(60deg, #ffea00e6, #cc0000, #77cc00);
+  color: #ffffff !important;
+  text-decoration: none !important;
+  border-radius: 16px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(204, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.bigmall-ai-action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(204, 0, 0, 0.3);
+}
+
+.bigmall-ai-action-btn-secondary {
+  background: #f1f5f9;
+  color: #1e293b !important;
+  border: 1px solid #cbd5e1;
+  box-shadow: none;
+}
+
+.bigmall-ai-action-btn-secondary:hover {
+  background: #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   Compact Product Cards in Chat
+   ========================================================================== */
+.bigmall-ai-products-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.bigmall-ai-product-card {
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bigmall-ai-product-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.bigmall-ai-product-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #ffffff;
+  flex-shrink: 0;
+  border: 1px solid #f0f0f0;
+}
+
+.bigmall-ai-product-img-fallback {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  background: #fff8f0;
+  color: #FF8800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.bigmall-ai-product-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bigmall-ai-product-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #212529;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bigmall-ai-product-qty {
+  font-size: 11px;
+  color: #6c757d;
+}
+
+.bigmall-ai-product-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.bigmall-ai-product-selling {
+  font-weight: 700;
+  color: #CC0000;
+  font-size: 13.5px;
+}
+
+.bigmall-ai-product-mrp {
+  color: #888888;
+  text-decoration: line-through;
+  font-size: 11px;
+}
+
+.bigmall-ai-product-discount {
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+/* Quick Suggestion Chips */
+.bigmall-ai-quick-container {
+  padding: 6px 12px;
+  background: #ffffff;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+
+.bigmall-ai-quick-container::-webkit-scrollbar {
+  display: none;
+}
+
+.bigmall-ai-quick-btn {
+  background: #fff8f0;
+  border: 1px solid #ffcc99;
+  color: #FF8800;
+  border-radius: 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bigmall-ai-quick-btn:hover {
+  background: #FF8800;
+  color: #ffffff;
+  border-color: #FF8800;
+}
+
+.bigmall-ai-quick-btn:focus {
+  outline: none;
+}
+
+/* Input Area */
+.bigmall-ai-input-area {
+  padding: 8px 12px;
+  background: #ffffff;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.bigmall-ai-input {
+  flex: 1;
+  min-height: 38px;
+  max-height: 90px;
+  border-radius: 18px;
+  border: 1px solid #ced4da;
+  padding: 8px 14px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: #ffffff;
+  color: #212529;
+  resize: none;
+  font-family: inherit;
+  line-height: 1.35;
+}
+
+.bigmall-ai-input:focus {
+  border-color: #FF8800;
+  box-shadow: 0 0 0 3px rgba(255, 136, 0, 0.15);
+}
+
+.bigmall-ai-input:disabled {
+  background: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.bigmall-ai-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(60deg, #ffea00e6, #cc0000, #77cc00);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.bigmall-ai-send-btn:hover:not(:disabled) {
+  transform: scale(1.06);
+}
+
+.bigmall-ai-send-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.bigmall-ai-send-btn:focus {
+  outline: none;
+}
+
+/* Typing / Loading Indicator */
+.bigmall-ai-typing {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.bigmall-ai-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FF8800;
+  animation: bigmallAiBounce 1.4s infinite ease-in-out both;
+}
+
+.bigmall-ai-typing-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.bigmall-ai-typing-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+/* Error Bubble Notice */
+.bigmall-ai-error-box {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Animations */
+@keyframes bigmallAiFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bigmallAiBounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* Mobile Responsive down to 320px */
+@media (max-width: 480px) {
+  .bigmall-ai-window {
+    width: calc(100vw - 32px);
+    right: 16px;
+    bottom: 85px;
+    height: calc(100vh - 130px);
+  }
+
+  .bigmall-ai-launcher {
+    bottom: 18px;
+    right: 18px;
+    width: 50px;
+    height: 50px;
+    font-size: 21px;
+  }
+}
+
+@media (max-width: 360px) {
+  .bigmall-ai-window {
+    width: calc(100vw - 20px);
+    right: 10px;
+    bottom: 75px;
+  }
+
+  .bigmall-ai-launcher {
+    bottom: 14px;
+    right: 14px;
+    width: 46px;
+    height: 46px;
+    font-size: 19px;
+  }
+}

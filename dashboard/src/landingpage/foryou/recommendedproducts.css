@@ -1,0 +1,53 @@
+/* BigMall Dashboard AI Recommended Products Styles - Scoped with prefix: .bigmall-ai-rec- */
+
+.bigmall-ai-rec-section {
+  padding-top: 15px;
+  padding-bottom: 25px;
+}
+
+.bigmall-ai-rec-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.bigmall-ai-rec-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+}
+
+.bigmall-ai-rec-badge {
+  background: #fff8e1;
+  color: #d84315;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #ffe082;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.bigmall-ai-rec-loading {
+  padding: 30px 15px;
+}
+
+@media (max-width: 767.98px) {
+  .bigmall-ai-rec-title {
+    font-size: 1.4rem;
+  }
+
+  .bigmall-ai-rec-badge {
+    font-size: 11.5px;
+    padding: 3px 10px;
+  }
+}
